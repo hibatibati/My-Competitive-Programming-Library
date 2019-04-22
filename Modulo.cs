@@ -9,7 +9,7 @@ public class Modulo
     public static int Pow(int m, int n)
     {
         if (n == 0) return 1;
-        if (n % 2 == 0) return Math.Pow(Multiple(m, m), n / 2);
+        if (n % 2 == 0) return Pow(Multiple(m, m), n / 2);
         else return Multiple(Pow(Multiple(m, m), n / 2), m);
     }
 
