@@ -2,18 +2,19 @@
 
 public class Modulo
 {
+    static readonly int MOD = (int)1e9 + 7;
     private static int Multiple(int num1, int num2)
-        => (int)(BigMul(num1, num2) % Input.MOD);
+        => (int)(Math.BigMul(num1, num2) % MOD);
 
     public static int Pow(int m, int n)
     {
         if (n == 0) return 1;
-        if (n % 2 == 0) return Pow(Multiple(m, m), n / 2);
+        if (n % 2 == 0) return Math.Pow(Multiple(m, m), n / 2);
         else return Multiple(Pow(Multiple(m, m), n / 2), m);
     }
 
     public static int Div(int a, int b)
-        => Multiple(a, Pow(b, Input.MOD - 2));
+        => Multiple(a, Pow(b, MOD - 2));
 
     public class Combination
     {
