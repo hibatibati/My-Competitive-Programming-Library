@@ -1,80 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
 
-public class UnionFind<T>
+public class UnionFind
 {
-
-    private class Vertex
+    private int _num;
+    private int[] _parent, _size, _rank;
+    public UnionFind(int num)
     {
-        public T Key { get; set; }
-        public Vertex Parent { get; set; }
-        public int Rank { get; set; }
-        public int Size { get; set; }
-        public Vertex(T key, Vertex Parent = null, int rank = 0)
+        _num = num;
+        _parent = new int[num]; _size = new int[num]; _rank = new int[num];
+        for (var i = 0; i < num; i++) { _parent[i] = i; _size[i] = 1; }
+    }
+    private int Find(int i)
+        => i == _parent[i] ? i : (_parent[i] = Find(_parent[i]));
+    public int Parent(int i)
+        => Find(i);
+    public int Size(int i)
+        => _size[Find(i)];
+    public bool Union(int v1, int v2)
+    {
+        v1 = Find(v1); v2 = Find(v2);
+        if (v1 == v2) return false;
+        _num--;
+        if (_rank[v1] > _rank[v2])
         {
-            this.Key = key;
-            this.Parent = Parent;
-            this.Rank = rank;
-        }
-    }
-    private readonly Dictionary<T, Vertex> dics;
-
-    public UnionFind()
-    {
-        dics = new Dictionary<T, Vertex>();
-    }
-
-    public T Parent(T key)
-        => FindSet(dics[key].Parent).Key;
-    public int Size(T key)
-        => FindSet(dics[key].Parent).Size;
-
-    public bool IsSame(T key1, T key2)
-    {
-        if (!dics.ContainsKey(key1) || !dics.ContainsKey(key2))
-            return false;
-        return ReferenceEquals(FindSet(dics[key1]), FindSet(dics[key2]));
-    }
-
-    public bool MakeSet(T key)
-    {
-        if (dics.ContainsKey(key))
-            return false;
-        dics[key] = new Vertex(key);
-        dics[key].Parent = dics[key];
-        dics[key].Size = 1;
-        return true;
-    }
-
-    public bool Union(T key1, T key2)
-    {
-        if (!dics.ContainsKey(key1) || !dics.ContainsKey(key2))
-            return false;
-        if (IsSame(key1, key2)) return false;
-        Link(FindSet(dics[key1]), FindSet(dics[key2]));
-        return true;
-    }
-
-    private void Link(Vertex vex1, Vertex vex2)
-    {
-        if (vex1.Rank > vex2.Rank)
-        {
-            vex2.Parent = vex1;
-            vex1.Size += vex2.Size;
+            _parent[v2] = v1;
+            _size[v1] += _size[v2];
         }
         else
         {
-            vex1.Parent = vex2;
-            vex2.Size += vex1.Size;
-            if (vex1.Rank == vex2.Rank)
-                vex2.Rank++;
+            _parent[v1] = v2;
+            _size[v2] += _size[v1];
+            if (_rank[v1] == _rank[v2])
+                _rank[v2]++;
         }
+        return true;
     }
-
-    private Vertex FindSet(Vertex vex)
-    {
-        if (!ReferenceEquals(vex.Parent, vex))
-            vex.Parent = FindSet(vex.Parent);
-        return vex.Parent;
-    }
+    public bool IsSame(int v1, int v2)
+        => Find(v1) == Find(v2);
 }
