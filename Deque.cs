@@ -33,7 +33,7 @@ public class Deque<T>
     }
 }
 
-class RingBuffer<T>
+public class RingBuffer<T>
 {
     private T[] _item;
     private int _size;
@@ -44,7 +44,7 @@ class RingBuffer<T>
     }
     public T this[int index]
     {
-        get { index = index < 0 ? _size + index % _size : index % _size; return _item[index]; }
-        set { index = index < 0 ? _size + index % _size : index % _size; _item[index] = value; }
+        get { index %= _size; if (index < 0) index += _size; return _item[index]; }
+        set { index %= _size; if (index < 0) index += _size; _item[index] = value; }
     }
 }
