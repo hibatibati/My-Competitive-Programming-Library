@@ -2,20 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 
+
 public class SegmentTree<T>
 {
-    private readonly List<T> item;
+    private readonly T[] item;
     private readonly int _num;
     private readonly Func<T, T, T> _func;
     private readonly Func<T, T, T> updateFunc;
     private readonly T _init;
 
     private int Parent(int index)
-        => (index - 1) / 2;
+        => (index - 1) >> 1;
     private int Left(int index)
-        => 2 * index + 1;
+        => (index << 1) + 1;
     private int Right(int index)
-        => 2 * (index + 1);
+        => (index + 1) << 1;
+    public T this[int i]
+    {
+        get { return item[i + _num - 1]; }
+        set { item[i + _num - 1] = value; }
+    }
 
     public SegmentTree(int num, T init, Func<T, T, T> func, Func<T, T, T> updateFunc = null)
     {
@@ -25,9 +31,9 @@ public class SegmentTree<T>
         this.updateFunc = updateFunc ?? ((T val1, T val2) => val2);
         while (_num <= num)
             _num *= 2;
-        item = new List<T>(2 * _num - 1);
+        item = new T[2 * _num - 1];
         for (var i = 0; i < 2 * _num - 1; i++)
-            item.Add(init);
+            item[i] = init;
     }
     public void Update(int index, T value)
     {
@@ -51,6 +57,11 @@ public class SegmentTree<T>
             Update(left, right, Right(k), (l + r) / 2, r, value);
         }
     }
+    public void All_Update()
+    {
+        for (int i = _num - 2; i >= 0; i--)
+            item[i] = _func(item[Left(i)], item[Right(i)]);
+    }
     public T Query(int index)
     {
         index += _num - 1;
@@ -62,6 +73,7 @@ public class SegmentTree<T>
         }
         return value;
     }
+    //[left,right)
     public T Query(int left, int right)
         => Query(left, right, 0, 0, _num);
     private T Query(int left, int right, int k, int l, int r)
