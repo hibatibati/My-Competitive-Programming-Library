@@ -1,10 +1,5 @@
 ## 競技プログラミングで用いるC#のライブラリ
 verifyはされていないので注意してください
-- Todo
-  - ディレクトリ整理
-  - MinMaxQueue
-  - ベルマンフォード
-  - オイラーツアー
   
 - Data Structure
   - Deque
@@ -24,3 +19,9 @@ verifyはされていないので注意してください
     - PrimeList(PrimeEnumeration)
     - Factorize
   - Modulo(Modulo Operation)
+  
+- Todo
+  - ディレクトリ整理
+  - MinMaxQueue
+  - ベルマンフォード
+  - オイラーツアー
