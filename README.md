@@ -6,7 +6,6 @@
   - WeightedUnionFind
   - BinaryIndexedTree
   - SegmentTree
-  - ModInt
 - Graph
   - ShortestPath
     - Dijkstra
