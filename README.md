@@ -15,6 +15,6 @@
   - NumberTheory
     - GCD
     - LCM
-    - PrimeList ###### PrimeEnumeration
+    - PrimeList ##### PrimeEnumeration
     - Factorize
   - Modulo(Modulo Operation)
