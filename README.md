@@ -6,10 +6,15 @@
   - WeightedUnionFind
   - BinaryIndexedTree
   - SegmentTree
+  - ModInt
 - Graph
   - ShortestPath
     - Dijkstra
-    - WarshallFloyd(ShortestPath)
+    - WarshallFloyd
 - Math
-  - GCD(NumberTheory)
-  - LCM(NumberTheory)
+  - NumberTheory
+    - GCD
+    - LCM
+    - PrimeList ###### PrimeEnumeration
+    - Factorize
+  - Modulo(Modulo Operation)
