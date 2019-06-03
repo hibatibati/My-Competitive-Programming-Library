@@ -1,4 +1,4 @@
-# My-Competitive-Programming-Library
+## 競技プログラミングで用いるライブラリ(C#)
 - Data Structure
   - Deque
   - PriorityQueue
@@ -15,6 +15,6 @@
   - NumberTheory
     - GCD
     - LCM
-    - PrimeList ##### PrimeEnumeration
+    - PrimeList(PrimeEnumeration)
     - Factorize
   - Modulo(Modulo Operation)
