@@ -1,4 +1,5 @@
-## 競技プログラミングで用いるライブラリ(C#)
+## 競技プログラミングで用いるC#のライブラリ
+verifyはされていないので注意してください
 - Data Structure
   - Deque
   - PriorityQueue
