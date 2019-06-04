@@ -35,6 +35,7 @@ public class SegmentTree<T>
         for (var i = 0; i < 2 * _num - 1; i++)
             item[i] = init;
     }
+    //一点更新
     public void Update(int index, T value)
     {
         index += _num - 1;
@@ -45,6 +46,7 @@ public class SegmentTree<T>
             item[index] = _func(item[Left(index)], item[Right(index)]);
         }
     }
+    //区間更新:[L,R)
     public void Update(int left, int right, T value)
         => Update(left, right, 0, 0, _num, value);
     private void Update(int left, int right, int k, int l, int r, T value)
@@ -57,11 +59,13 @@ public class SegmentTree<T>
             Update(left, right, Right(k), (l + r) / 2, r, value);
         }
     }
+    //O(N)で構築
     public void All_Update()
     {
         for (int i = _num - 2; i >= 0; i--)
             item[i] = _func(item[Left(i)], item[Right(i)]);
     }
+    //一点取得
     public T Query(int index)
     {
         index += _num - 1;
@@ -73,7 +77,7 @@ public class SegmentTree<T>
         }
         return value;
     }
-    //[left,right)
+    //区間取得:[L,R)
     public T Query(int left, int right)
         => Query(left, right, 0, 0, _num);
     private T Query(int left, int right, int k, int l, int r)

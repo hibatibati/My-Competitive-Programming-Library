@@ -1,5 +1,8 @@
 ﻿using System;
-
+/// <summary>
+/// Enqueue/Dequeue/ランダムアクセス:O(1)
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class Deque<T>
 {
     private RingBuffer<T> _buf;
@@ -33,7 +36,7 @@ public class Deque<T>
     }
 }
 
-public class RingBuffer<T>
+class RingBuffer<T>
 {
     private T[] _item;
     private int _size;

@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
+/// <summary>
+/// Enqueue/Dequeue:O(logN)
+/// Peek:O(1)
+/// </summary>
+/// <typeparam name="T">Comparableな型</typeparam>
 public class PriorityQueue<T> where T : IComparable<T>
 {
     private List<T> _item;

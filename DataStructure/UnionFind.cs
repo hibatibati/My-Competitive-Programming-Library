@@ -1,5 +1,7 @@
 ﻿using System;
-
+/// <summary>
+/// Union/IsSame:O(α(N))
+/// </summary>
 public class UnionFind
 {
     private int _num;
