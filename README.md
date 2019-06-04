@@ -13,6 +13,7 @@ verifyはされていないので注意してください
   - ShortestPath
     - Dijkstra
     - WarshallFloyd
+    - BellmanFord
 - Math
   - NumberTheory
     - GCD
@@ -23,5 +24,4 @@ verifyはされていないので注意してください
   
 - Todo
   - コメント
-  - ベルマンフォード
   - オイラーツアー
