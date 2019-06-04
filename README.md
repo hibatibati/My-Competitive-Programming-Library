@@ -8,6 +8,7 @@ verifyはされていないので注意してください
   - WeightedUnionFind
   - BinaryIndexedTree
   - SegmentTree
+  - MinMaxHeap
 - Graph
   - ShortestPath
     - Dijkstra
@@ -22,6 +23,5 @@ verifyはされていないので注意してください
   
 - Todo
   - コメント
-  - MinMaxQueue
   - ベルマンフォード
   - オイラーツアー
