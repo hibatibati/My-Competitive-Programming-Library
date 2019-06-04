@@ -21,7 +21,7 @@ verifyはされていないので注意してください
   - Modulo(Modulo Operation)
   
 - Todo
-  - ディレクトリ整理
+  - コメント
   - MinMaxQueue
   - ベルマンフォード
   - オイラーツアー
