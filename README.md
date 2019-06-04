@@ -14,6 +14,10 @@ verifyはされていないので注意してください
     - Dijkstra
     - WarshallFloyd
     - BellmanFord
+  - MST(Minimum Spanning Tree)
+    - Kruskal
+  - Tree
+    - Diameter
 - Math
   - NumberTheory
     - GCD
@@ -24,7 +28,6 @@ verifyはされていないので注意してください
   
 - Todo
   - コメント
-  - 木の直径
   - プリム法
   - ブルーフカ法
   - 平衡二分木
