@@ -1,8 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class ShortestPath
 {
+    /// <summary>
+    /// 単一始点最短距離をO((E+V)logV)で求める
+    /// </summary>
+    /// <param name="edges">負辺を含まない辺の集合</param>
+    /// <param name="st">始点</param>
+    /// <returns></returns>
     public static long[] Dijkstra(IList<IEnumerable<Pair<long, int>>> edges, int st)
     {
         var dist = Enumerable.Repeat(long.MaxValue, edges.Count).ToArray();
@@ -22,7 +29,13 @@ public class ShortestPath
         }
         return dist;
     }
-
+    /// <summary>
+    /// 全点対最短距離をO(V^3)で求める
+    /// </summary>
+    /// <param name="num">頂点数</param>
+    /// <param name="edges">辺の集合</param>
+    /// <param name="directed">有向グラフか</param>
+    /// <returns></returns>
     public static long[][] WarshallFloyd(int num, IEnumerable<Pair<long, int, int>> edges, bool directed = false)
     {
         var dist = Enumerable.Repeat(0, num).Select(_ => Enumerable.Repeat(long.MaxValue / 2, num).ToArray()).ToArray();
@@ -37,6 +50,30 @@ public class ShortestPath
                 for (var j = 0; j < num; j++)
                     dist[i][j] = Min(dist[i][j], dist[i][k] + dist[k][j]);
         return dist;
+    }
+    /// <summary>
+    /// 有向グラフ上の単一始点最短距離をO(VE)で求める
+    /// </summary>
+    /// <param name="num">頂点数</param>
+    /// <param name="edges">辺の集合</param>
+    /// <param name="st">始点</param>
+    /// <param name="dist">始点からの最短距離</param>
+    /// <returns>始点から辿り着ける負閉路が存在した場合、false</returns>
+    public static bool BellmanFord(int num, IEnumerable<Pair<long, int, int>> edges, int st, out long[] dist)
+    {
+        dist = Enumerable.Repeat(long.MaxValue, num).ToArray();
+        dist[st] = 0;
+        for (var i = 0; i < num - 1; i++)
+            foreach (var e in edges)
+                if (dist[e.v2] != long.MaxValue)
+                    dist[e.v3] = Min(dist[e.v3], dist[e.v2] + e.v1);
+        foreach (var e in edges)
+        {
+            if (dist[e.v2] == long.MaxValue) continue;
+            if (dist[e.v3] > dist[e.v2] + e.v1)
+                return false;
+        }
+        return true;
     }
 }
 
