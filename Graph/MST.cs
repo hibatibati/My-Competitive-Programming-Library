@@ -5,7 +5,7 @@ using System.Linq;
 public class MST
 {
     /// <summary>
-    /// 最小全域木の重みを求める
+    /// 最小全域木の重みをO(ElogE)で求める
     /// </summary>
     /// <param name="num">頂点数</param>
     /// <param name="edges">辺の集合</param>
