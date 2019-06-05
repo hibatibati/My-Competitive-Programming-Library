@@ -31,8 +31,8 @@ public class MinMaxHeap<T> where T : IComparable<T>
     public void Enqueue(T value) { minh.Enqueue(value); maxh.Enqueue(value); }
     public T PeekMin() { normalize(); return minh.Peek; }
     public T PeekMax() { normalize(); return maxh.Peek; }
-    public T DequeueMin() { normalize(); var t = minh.Dequeue(); maxp.Enqueue(t); return t; }
-    public T DequeueMax() { normalize(); var t = maxh.Dequeue(); minp.Enqueue(t); return t; }
+    public T DequeueMin() { normalize(); return maxp.Enqueue(minh.Dequeue());  }
+    public T DequeueMax() { normalize(); return minp.Enqueue(maxh.Dequeue()); }
 }
 
 class PriorityQueue<T> where T : IComparable<T>
