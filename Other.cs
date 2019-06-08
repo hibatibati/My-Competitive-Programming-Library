@@ -21,6 +21,7 @@ public class Other
             bit.add(dic[ar[i]], 1);
             res += t;
         }
+        return res;
     }
 }
 
