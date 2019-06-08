@@ -30,6 +30,8 @@ verifyはされていないので注意してください
 - BinarySearch
   - UpperBound
   - LowerBound
+- Other
+  -Inversion(転倒数)
   
 - Todo
   - コメント
