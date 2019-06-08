@@ -13,6 +13,6 @@ public class BIT
     }
     public void add(int index, int value)
     {
-        for (var i = index; i <= _item.Length; i += i & -i) _item[i] += value;
+        for (var i = index; i < _item.Length; i += i & -i) _item[i] += value;
     }
 }
