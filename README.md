@@ -31,7 +31,7 @@ verifyはされていないので注意してください
   - UpperBound
   - LowerBound
 - Other
-  -Inversion(転倒数)
+  - Inversion(転倒数)
   
 - Todo
   - コメント
