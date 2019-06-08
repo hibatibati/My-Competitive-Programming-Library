@@ -18,6 +18,8 @@ verifyはされていないので注意してください
     - Kruskal
   - Tree
     - Diameter
+  - GraphLib
+    - IsBipartite(二部グラフ判定)
 - Math
   - NumberTheory
     - GCD
@@ -34,7 +36,6 @@ verifyはされていないので注意してください
   - プリム法
   - ブルーフカ法
   - 平衡二分木
-  - 二部グラフ判定
   - トポロジカルソート
   - 強連結分解
   - フロー系
