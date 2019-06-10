@@ -20,6 +20,9 @@ verifyはされていないので注意してください
     - Diameter
   - GraphLib
     - IsBipartite(二部グラフ判定)
+    - Reverse(転置グラフ)
+    - TopologicalSort
+    - SCC(Strongly Connected Components)
 - Math
   - NumberTheory
     - GCD
@@ -38,8 +41,6 @@ verifyはされていないので注意してください
   - プリム法
   - ブルーフカ法
   - 平衡二分木
-  - トポロジカルソート
-  - 強連結分解
   - フロー系
   - フィボナッチヒープ
   - オイラーツアー
