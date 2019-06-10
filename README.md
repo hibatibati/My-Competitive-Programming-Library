@@ -18,6 +18,8 @@ verifyはされていないので注意してください
     - Kruskal
   - Tree
     - Diameter
+  - GraphLib
+    - IsBipartite(二部グラフ判定)
 - Math
   - NumberTheory
     - GCD
@@ -28,13 +30,14 @@ verifyはされていないので注意してください
 - BinarySearch
   - UpperBound
   - LowerBound
+- Other
+  - Inversion(転倒数)
   
 - Todo
   - コメント
   - プリム法
   - ブルーフカ法
   - 平衡二分木
-  - 二部グラフ判定
   - トポロジカルソート
   - 強連結分解
   - フロー系
