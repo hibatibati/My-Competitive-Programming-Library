@@ -10,9 +10,9 @@ public class Tree
     /// <param name="edge">辺の集合</param>
     /// <returns></returns>
     public static long Diameter(IList<IEnumerable<Pair<long, int>>> edge)
-        => bfs(edge, bfs(edge, 0).v2).v1;
+        => bfs(edge, Diabfs(edge, 0).v2).v1;
     //dfsにするとコードはかなり短くなる
-    private static Pair<long, int> bfs(IList<IEnumerable<Pair<long, int>>> edge, int st)
+    private static Pair<long, int> Diabfs(IList<IEnumerable<Pair<long, int>>> edge, int st)
     {
         var dist = Enumerable.Repeat(-1L, edge.Count).ToArray();
         dist[st] = 0;
@@ -32,6 +32,27 @@ public class Tree
         }
         return new Pair<long, int>(dist[maxj], maxj);
     }
+
+    /// <summary>
+    /// オイラーツアー
+    /// </summary>
+    /// <param name="tree"></param>
+    /// <param name="root"></param>
+    /// <returns></returns>
+    public static List<int> EularTour(IList<IEnumerable<int>> tree, int root)
+    {
+        var list = new List<int>(tree.Count * 2);
+        EularTour(tree, root, -1, list);
+        return list;
+    }
+    private static void EularTour(IList<IEnumerable<int>> tree, int index, int pa, List<int> list)
+    {
+        list.Add(index);
+        foreach (var c in tree[index])
+            if (c != pa)
+                EularTour(tree, c, index, list);
+        list.Add(index);
+    }
 }
 
 class Pair<T1, T2> : IComparable<Pair<T1, T2>>
@@ -48,11 +69,6 @@ class Pair<T1, T2> : IComparable<Pair<T1, T2>>
         if (c == 0)
             c = Comparer<T2>.Default.Compare(v2, p.v2);
         return c;
-    }
-    public static Pair<T1, T2> MakePair()
-    {
-        var r = ReadLine().Split(' ');
-        return new Pair<T1, T2>(Input.getValue<T1>(r[0]), Input.getValue<T2>(r[1]));
     }
     public override string ToString()
         => $"{v1.ToString()} {v2.ToString()}";
