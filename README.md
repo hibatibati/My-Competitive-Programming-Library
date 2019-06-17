@@ -18,6 +18,7 @@ verifyはされていないので注意してください
     - Kruskal
   - Tree
     - Diameter
+    - EulerTour
   - GraphLib
     - IsBipartite(二部グラフ判定)
     - Reverse(転置グラフ)
@@ -40,11 +41,12 @@ verifyはされていないので注意してください
   - コメント
   - プリム法
   - ブルーフカ法
-  - 平衡二分木
+  - 平衡二分木(Treap,RBT)
   - フロー系
   - フィボナッチヒープ
-  - オイラーツアー
   - 謎木
-  - HL分解
+  - HL分解,LCA
   - 遅延セグ木
   - 非再帰セグ木
+  - LowLink
+  - スライド最小値
