@@ -23,10 +23,34 @@ public class MST
             }
         return weight;
     }
+    /// <summary>
+    /// ある頂点を含む連結グラフの最小全域木の重みを求めます
+    /// </summary>
+    /// <param name="edge">辺の集合</param>
+    /// <param name="st">始点</param>
+    /// <returns></returns>
+    public static long Prim(IList<IEnumerable<Pair<long, int>>> edge, int st)
+    {
+        var res = 0L;
+        var pq = new PriorityQueue<Pair<long, int>>(false);
+        pq.Enqueue(new Pair<long, int>(0, st));
+        var th = new bool[edge.Count];
+        while (pq.Count != 0)
+        {
+            var p = pq.Dequeue();
+            if (th[p.v2]) continue;
+            th[p.v2] = true;
+            res += p.v1;
+            foreach (var e in edge[p.v2])
+                if (!th[e.v2])
+                    pq.Enqueue(e);
+        }
+        return res;
+    }
 }
 
 
-public class UnionFind
+class UnionFind
 {
     private int _num;
     private int[] _parent, _size, _rank;
@@ -65,7 +89,66 @@ public class UnionFind
         => Find(v1) == Find(v2);
 }
 
-public class Pair<T1, T2> : IComparable<Pair<T1, T2>>
+class PriorityQueue<T> where T : IComparable<T>
+{
+    public List<T> _item;
+    public int Count { get { return _item.Count; } }
+    public bool IsMaxHeap { get; set; }
+    public T Peek { get { return _item[0]; } }
+    public PriorityQueue(bool IsMaxHeap = true, IEnumerable<T> list = null)
+    {
+        _item = new List<T>();
+        this.IsMaxHeap = IsMaxHeap;
+        if (list != null)
+        {
+            _item.AddRange(list);
+            Build();
+        }
+    }
+    private int Compare(int i, int j) => (IsMaxHeap ? 1 : -1) * _item[i].CompareTo(_item[j]);
+    private void Swap(int i, int j) { var t = _item[i]; _item[i] = _item[j]; _item[j] = t; }
+    private int Parent(int i)
+        => (i - 1) >> 1;
+    private int Left(int i)
+        => (i << 1) + 1;
+    public T Enqueue(T val)
+    {
+        int i = _item.Count;
+        _item.Add(val);
+        while (i > 0)
+        {
+            int p = Parent(i);
+            if (Compare(i, p) > 0)
+                Swap(i, p);
+            i = p;
+        }
+        return val;
+    }
+    private void Heapify(int index)
+    {
+        for (int i = index, j; (j = Left(i)) < _item.Count; i = j)
+        {
+            if (j != _item.Count - 1 && Compare(j, j + 1) < 0) j++;
+            if (Compare(i, j) < 0)
+                Swap(i, j);
+        }
+    }
+    public T Dequeue()
+    {
+        T val = _item[0];
+        _item[0] = _item[_item.Count - 1];
+        _item.RemoveAt(_item.Count - 1);
+        Heapify(0);
+        return val;
+    }
+    private void Build()
+    {
+        for (var i = (_item.Count >> 1) - 1; i >= 0; i--)
+            Heapify(i);
+    }
+}
+
+class Pair<T1, T2> : IComparable<Pair<T1, T2>>
 {
     public T1 v1 { get; set; }
     public T2 v2 { get; set; }
@@ -80,16 +163,11 @@ public class Pair<T1, T2> : IComparable<Pair<T1, T2>>
             c = Comparer<T2>.Default.Compare(v2, p.v2);
         return c;
     }
-    public static Pair<T1, T2> MakePair()
-    {
-        var r = ReadLine().Split(' ');
-        return new Pair<T1, T2>(Input.getValue<T1>(r[0]), Input.getValue<T2>(r[1]));
-    }
     public override string ToString()
         => $"{v1.ToString()} {v2.ToString()}";
 }
 
-public class Pair<T1, T2, T3> : Pair<T1, T2>, IComparable<Pair<T1, T2, T3>>
+class Pair<T1, T2, T3> : Pair<T1, T2>, IComparable<Pair<T1, T2, T3>>
 {
     public T3 v3 { get; set; }
     public Pair() : base() { v3 = default(T3); }
@@ -102,11 +180,6 @@ public class Pair<T1, T2, T3> : Pair<T1, T2>, IComparable<Pair<T1, T2, T3>>
         if (c == 0)
             c = Comparer<T3>.Default.Compare(v3, p.v3);
         return c;
-    }
-    public new static Pair<T1, T2, T3> MakePair()
-    {
-        var r = ReadLine().Split(' ');
-        return new Pair<T1, T2, T3>(Input.getValue<T1>(r[0]), Input.getValue<T2>(r[1]), Input.getValue<T3>(r[2]));
     }
     public override string ToString()
         => $"{base.ToString()} {v3.ToString()}";
