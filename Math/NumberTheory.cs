@@ -16,6 +16,21 @@ public class NumberTheory
     public static long GCD(long num1, long num2)
         => num1 < num2 ? GCD(num2, num1) :
            num2 > 0 ? GCD(num2, num1 % num2) : num1;
+    /// <summary>
+    /// ax+by=gcd(a,b)の整数解を求めます.
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns>gcd(a,b)</returns>
+    public static long ExtGCD(long a, long b, out long x, out long y)
+    {
+        if (b == 0) { x = 1; y = 0; return a; }
+        var d = ExtGCD(b, a % b, out y, out x);
+        y -= a / b * x;
+        return d;
+    }
 
     public static List<int> PrimeList(long num)
     {
