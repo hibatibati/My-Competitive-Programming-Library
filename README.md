@@ -16,6 +16,7 @@ verifyはされていないので注意してください
     - BellmanFord
   - MST(Minimum Spanning Tree)
     - Kruskal
+    - Prim
   - Tree
     - Diameter
     - EulerTour
@@ -28,6 +29,7 @@ verifyはされていないので注意してください
   - NumberTheory
     - GCD
     - LCM
+    - ExtGCD(拡張ユークリッド)
     - PrimeList(PrimeEnumeration)
     - Factorize
   - Modulo(Modulo Operation)
@@ -39,7 +41,6 @@ verifyはされていないので注意してください
   
 - Todo
   - コメント
-  - プリム法
   - ブルーフカ法
   - 平衡二分木(Treap,RBT)
   - フロー系
