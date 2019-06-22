@@ -25,6 +25,7 @@ verifyはされていないので注意してください
     - Reverse(転置グラフ)
     - TopologicalSort
     - SCC(Strongly Connected Components)
+    - LowLink(関節点、橋)
 - Math
   - NumberTheory
     - GCD
@@ -49,6 +50,5 @@ verifyはされていないので注意してください
   - HL分解,LCA
   - 遅延セグ木
   - 非再帰セグ木
-  - LowLink
   - スライド最小値
   - SparseTable
