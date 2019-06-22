@@ -51,3 +51,4 @@ verifyはされていないので注意してください
   - 非再帰セグ木
   - LowLink
   - スライド最小値
+  - SparseTable
