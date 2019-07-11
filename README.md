@@ -39,6 +39,7 @@ verifyはされていないので注意してください
   - LowerBound
 - Other
   - Inversion(転倒数)
+  - SlideMin(スライド最小値)
   
 - Todo
   - コメント
@@ -50,5 +51,4 @@ verifyはされていないので注意してください
   - HL分解,LCA
   - 遅延セグ木
   - 非再帰セグ木
-  - スライド最小値
   - SparseTable
