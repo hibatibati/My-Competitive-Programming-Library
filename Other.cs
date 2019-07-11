@@ -44,7 +44,7 @@ public class Other
         where T : IComparable<T>
     {
         var deq = new Deque<T>();
-        var ret = new T[ar.Count - k];
+        var ret = new T[ar.Count - k + 1];
         for(var i=0;i<ar.Count;i++)
         {
             while (deq.Count != 0 && ar[deq.PeekTail].CompareTo(ar[i]) != -1)
