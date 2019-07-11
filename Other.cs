@@ -43,7 +43,7 @@ public class Other
     public static T[] SlideMin<T>(IList<T> ar,int k)
         where T : IComparable<T>
     {
-        var deq = new Deque<T>();
+        var deq = new Deque<int>();
         var ret = new T[ar.Count - k + 1];
         for(var i=0;i<ar.Count;i++)
         {
