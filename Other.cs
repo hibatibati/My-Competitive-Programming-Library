@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-//書き留めて置きたいが分別できないコード群
+//色々
 public class Other
 {
     //転倒数
@@ -13,8 +13,9 @@ public class Other
         foreach (var v in ar.OrderBy(v => v))
             if (!dic.ContainsKey(v))
                 dic[v] = ++d;
-        var bit = new BIT(num + 1); var res = 0;
-        for (var i = 0; i < num; i++)
+        var bit = new BIT(ar.Length + 1);
+        var res = 0;
+        for (var i = 0; i < ar.Length; i++)
         {
             var t = bit[dic[ar[i]]];
             t = i - t;
@@ -27,6 +28,7 @@ public class Other
 
 public class BIT
 {
+    //1-indexed
     int[] _item;
     public BIT(int num)
     {
@@ -36,7 +38,6 @@ public class BIT
     {
         get { var s = 0; for (var i = index; i > 0; i -= i & -i) s += _item[i]; return s; }
     }
-    //0を与えると破滅します
     public void add(int index, int value)
     {
         for (var i = index; i < _item.Length; i += i & -i) _item[i] += value;
