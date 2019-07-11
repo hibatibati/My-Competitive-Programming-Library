@@ -97,6 +97,9 @@ public class GraphLib
                 SCCrdfs(rev, ad, res, ct);
     }
     
+    /// <summary>
+    /// 依存:Pair
+    /// </summary>
     public class LowLink
     {
         private static List<int> arti;

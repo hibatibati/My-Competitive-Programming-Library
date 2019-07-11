@@ -4,6 +4,7 @@ using System.Collections.Generic;
 /// <summary>
 /// Enqueue/DequeueMin/DequeueMax:ならしO(logN)
 /// PeekMin/PeekMax:ならしO(1)
+/// 依存:PriorityQueue
 /// </summary>
 /// <typeparam name="T">Comparableである型</typeparam>
 public class MinMaxHeap<T> where T : IComparable<T>

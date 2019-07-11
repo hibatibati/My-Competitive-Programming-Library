@@ -1,6 +1,7 @@
 ﻿using System;
 /// <summary>
-/// Enqueue/Dequeue/ランダムアクセス:O(1)
+/// 計算量:Enqueue/Dequeue/ランダムアクセス:O(1)
+/// 依存:RingBuffer
 /// </summary>
 /// <typeparam name="T"></typeparam>
 public class Deque<T>
@@ -8,14 +9,25 @@ public class Deque<T>
     private RingBuffer<T> _buf;
     int _offset = 0, _size;
     public int Count { get; private set; }
+    public Deque() { _buf = new RingBuffer<T>(_size = 16); }
     public Deque(int size) { _buf = new RingBuffer<T>(_size = size); }
     public T this[int index]
     {
         get { return _buf[index + _offset]; }
         set { _buf[index + _offset] = value; }
     }
+    private void Extend()
+    {
+        var t = new RingBuffer<T>(_size << 1);
+        for (var i = 0; i < _size; i++)
+            t[i] = _buf[_offset + i];
+        _offset = 0;
+        _buf = t;
+        _size <<= 1;
+    }
     public void EnqueueHead(T item)
     {
+        if (Count == _size) Extend();
         _buf[--_offset] = item;
         Count++;
     }
@@ -27,6 +39,7 @@ public class Deque<T>
     }
     public void EnqueueTail(T item)
     {
+        if (Count == _size) Extend();
         _buf[Count++ + _offset] = item;
     }
     public T DequeueTail()

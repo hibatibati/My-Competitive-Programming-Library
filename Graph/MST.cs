@@ -6,6 +6,7 @@ public class MST
 {
     /// <summary>
     /// 最小全域木の重みをO(ElogE)で求める
+    /// 依存:UnionFind
     /// </summary>
     /// <param name="num">頂点数</param>
     /// <param name="edges">辺の集合</param>
@@ -25,6 +26,7 @@ public class MST
     }
     /// <summary>
     /// ある頂点を含む連結グラフの最小全域木の重みを求めます
+    /// 依存:PriorityQueue,Pair
     /// </summary>
     /// <param name="edge">辺の集合</param>
     /// <param name="st">始点</param>

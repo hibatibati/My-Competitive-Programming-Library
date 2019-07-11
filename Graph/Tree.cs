@@ -6,12 +6,13 @@ public class Tree
 {
     /// <summary>
     /// 木の直径をO(E)で求める
+    /// 依存:Pair
     /// </summary>
     /// <param name="edge">辺の集合</param>
     /// <returns></returns>
     public static long Diameter(IList<IEnumerable<Pair<long, int>>> edge)
         => bfs(edge, Diabfs(edge, 0).v2).v1;
-    //dfsにするとコードはかなり短くなる
+    //bfsなのはStackOverFlow対策(ACならdfsでもよい)
     private static Pair<long, int> Diabfs(IList<IEnumerable<Pair<long, int>>> edge, int st)
     {
         var dist = Enumerable.Repeat(-1L, edge.Count).ToArray();

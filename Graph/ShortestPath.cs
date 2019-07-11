@@ -6,6 +6,7 @@ public class ShortestPath
 {
     /// <summary>
     /// 単一始点最短距離をO((E+V)logV)で求める
+    /// 依存:PriorityQueue,Pair
     /// </summary>
     /// <param name="edges">負辺を含まない辺の集合</param>
     /// <param name="st">始点</param>
