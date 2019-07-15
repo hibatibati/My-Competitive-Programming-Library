@@ -52,3 +52,5 @@ verifyはされていないので注意してください
   - 遅延セグ木
   - 非再帰セグ木
   - SparseTable
+  - RadixHeap
+  - SkewHeap
