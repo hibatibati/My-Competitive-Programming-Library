@@ -9,6 +9,7 @@ verifyはされていないので注意してください
   - BinaryIndexedTree
   - SegmentTree
   - MinMaxHeap
+  - PersistentStack
 - Graph
   - ShortestPath
     - Dijkstra
