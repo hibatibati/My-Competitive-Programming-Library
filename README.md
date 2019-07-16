@@ -8,6 +8,7 @@ verifyはされていないので注意してください
   - WeightedUnionFind
   - BinaryIndexedTree
   - SegmentTree
+  - ModInt
   - MinMaxHeap
   - PersistentStack
 - Graph
