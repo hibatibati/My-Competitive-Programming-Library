@@ -2,7 +2,7 @@
 
 public class PersistentStack<T>
 {
-    public class Node
+    private class Node
     {
         public T Key { get; set; }
         public Node next { get; set; }
@@ -11,7 +11,7 @@ public class PersistentStack<T>
     public int Count { get; private set; }
     public PersistentStack() { }
     private PersistentStack(Node head, int Count = 0) { this.head = head; this.Count = Count; }
-    public Node head { get; private set; }
+    private Node head;
     public T Peek { get { return head.Key; } }
     public PersistentStack<T> Push(T val)
         => new PersistentStack<T>(new Node(val, head), Count + 1);
