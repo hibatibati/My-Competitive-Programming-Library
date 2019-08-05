@@ -58,6 +58,24 @@ public class Other
         }
         return ret;
     }
+
+    /// <summary>
+    /// 連長圧縮をします
+    /// 依存:Pair
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="list"></param>
+    /// <returns></returns>
+    public static List<Pair<T, int>> RLEncoding<T>(IList<T> list)
+        where T : IEquatable<T>
+    {
+        var ret = new List<Pair<T, int>> { new Pair<T, int>(list[0], 1) };
+        for (var i = 1; i < list.Count; i++)
+            if (ret.Last().v1.Equals(list[i]))
+                ret[ret.Count - 1].v2++;
+            else ret.Add(new Pair<T, int>(list[i], 1));
+        return ret;
+    }
 }
 
 class BIT
@@ -138,4 +156,39 @@ class RingBuffer<T>
         get { index %= Count; if (index < 0) index += Count; return _item[index]; }
         set { index %= Count; if (index < 0) index += Count; _item[index] = value; }
     }
+}
+
+public class Pair<T1, T2> : IComparable<Pair<T1, T2>>
+{
+    public T1 v1 { get; set; }
+    public T2 v2 { get; set; }
+    public Pair() { v1 = Input.Next<T1>(); v2 = Input.Next<T2>(); }
+    public Pair(T1 v1, T2 v2)
+    { this.v1 = v1; this.v2 = v2; }
+
+    public int CompareTo(Pair<T1, T2> p)
+    {
+        var c = Comparer<T1>.Default.Compare(v1, p.v1);
+        if (c == 0)
+            c = Comparer<T2>.Default.Compare(v2, p.v2);
+        return c;
+    }
+    public override string ToString()
+        => $"{v1.ToString()} {v2.ToString()}";
+    public override bool Equals(object obj)
+        => this == (Pair<T1, T2>)obj;
+    public override int GetHashCode()
+        => v1.GetHashCode() ^ v2.GetHashCode();
+    public static bool operator ==(Pair<T1, T2> p1, Pair<T1, T2> p2)
+        => p1.CompareTo(p2) == 0;
+    public static bool operator !=(Pair<T1, T2> p1, Pair<T1, T2> p2)
+        => p1.CompareTo(p2) != 0;
+    public static bool operator >(Pair<T1, T2> p1, Pair<T1, T2> p2)
+        => p1.CompareTo(p2) == 1;
+    public static bool operator >=(Pair<T1, T2> p1, Pair<T1, T2> p2)
+        => p1.CompareTo(p2) != -1;
+    public static bool operator <(Pair<T1, T2> p1, Pair<T1, T2> p2)
+        => p1.CompareTo(p2) == -1;
+    public static bool operator <=(Pair<T1, T2> p1, Pair<T1, T2> p2)
+        => p1.CompareTo(p2) != 1;
 }
