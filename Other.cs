@@ -5,6 +5,22 @@ using System.Linq;
 public class Other
 {
     /// <summary>
+    /// 座標圧縮をします
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="ar"></param>
+    /// <param name="d">初期値</param>
+    /// <returns></returns>
+    public static Dictionary<T, int> CoordinateComp<T>(IList<T> ar,int d=0)
+        where T:IComparable<T>
+    {
+        var dic = new Dictionary<T, int>();
+        foreach (var v in ar.OrderBy(v => v))
+            if (!dic.ContainsKey(v))
+                dic[v] = d++;
+        return dic;
+    }
+    /// <summary>
     /// 転倒数を求めます.
     /// 計算量:O(NlogN)
     /// 依存:Binary-Indexed-Tree
@@ -13,12 +29,8 @@ public class Other
     /// <returns></returns>
     public static long Inversion(int[] ar)
     {
-        var dic = new Dictionary<int, int>();
-        var d = 0;
         //座圧
-        foreach (var v in ar.OrderBy(v => v))
-            if (!dic.ContainsKey(v))
-                dic[v] = ++d;
+        var dic = CoordinateComp(ar, 1);
         var bit = new BIT(ar.Length + 1);
         var res = 0;
         for (var i = 0; i < ar.Length; i++)
