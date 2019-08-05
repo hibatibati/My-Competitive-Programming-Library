@@ -42,6 +42,7 @@ verifyはされていないので注意してください
 - Other
   - Inversion(転倒数)
   - SlideMin(スライド最小値)
+  - RLEncoding(ランレングス圧縮)
   
 - Todo
   - コメント
