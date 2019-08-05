@@ -40,6 +40,7 @@ verifyはされていないので注意してください
   - UpperBound
   - LowerBound
 - Other
+  - CoordinateComp(座標圧縮)
   - Inversion(転倒数)
   - SlideMin(スライド最小値)
   - RLEncoding(ランレングス圧縮)
