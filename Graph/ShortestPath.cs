@@ -68,12 +68,13 @@ public class ShortestPath
             foreach (var e in edges)
                 if (dist[e.v2] != long.MaxValue)
                     dist[e.v3] = Min(dist[e.v3], dist[e.v2] + e.v1);
-        foreach (var e in edges)
-        {
-            if (dist[e.v2] == long.MaxValue) continue;
-            if (dist[e.v3] > dist[e.v2] + e.v1)
-                return false;
-        }
+        for(var i=0;i<num;i++)
+            foreach (var e in edges)
+            {
+                if (dist[e.v2] == long.MaxValue) continue;
+                if (dist[e.v3] > dist[e.v2] + e.v1)
+                    return false;
+            }
         return true;
     }
 }
