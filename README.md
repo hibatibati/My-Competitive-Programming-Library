@@ -36,6 +36,8 @@ verifyはされていないので注意してください
     - PrimeList(PrimeEnumeration)
     - Factorize
   - Modulo(Modulo Operation)
+- String
+  - RollingHash
 - BinarySearch
   - UpperBound
   - LowerBound
