@@ -4,16 +4,27 @@ using System.Linq;
 
 public class Tree
 {
+    private IList<IEnumerable<Pair<long, int>>> edge;
+    private List<int> etList;
+    public int Count { get { return edge.Count(); } }
+    public Tree(IList<IEnumerable<Pair<long, int>>> edge)
+    {
+        this.edge = edge;
+    }
+    public Tree(IList<IEnumerable<int>> edge)
+    {
+        this.edge = edge.Select(adj => adj.Select(v => new Pair<long, int>(1, v))).ToArray();
+    }
     /// <summary>
     /// 木の直径をO(E)で求める
     /// 依存:Pair
     /// </summary>
     /// <param name="edge">辺の集合</param>
     /// <returns></returns>
-    public static long Diameter(IList<IEnumerable<Pair<long, int>>> edge)
-        => bfs(edge, Diabfs(edge, 0).v2).v1;
+    public long Diameter()
+        => Diameter(Diameter(0).v2).v1;
     //bfsなのはStackOverFlow対策(ACならdfsでもよい)
-    private static Pair<long, int> Diabfs(IList<IEnumerable<Pair<long, int>>> edge, int st)
+    private Pair<long, int> Diameter(int st)
     {
         var dist = Enumerable.Repeat(-1L, edge.Count).ToArray();
         dist[st] = 0;
@@ -40,27 +51,28 @@ public class Tree
     /// <param name="tree"></param>
     /// <param name="root"></param>
     /// <returns></returns>
-    public static List<int> EularTour(IList<IEnumerable<int>> tree, int root)
+    public List<int> EularTour(int root)
     {
-        var list = new List<int>(tree.Count * 2);
-        EularTour(tree, root, -1, list);
-        return list;
+        etList = new List<int>(edge.Count * 2);
+        EularTour(root, -1);
+        return etList;
     }
-    private static void EularTour(IList<IEnumerable<int>> tree, int index, int pa, List<int> list)
+    private void EularTour(int index, int pa)
     {
-        list.Add(index);
-        foreach (var c in tree[index])
-            if (c != pa)
-                EularTour(tree, c, index, list);
-        list.Add(index);
+        etList.Add(index);
+        foreach (var c in edge[index])
+            if (c.v2 != pa)
+                EularTour(c.v2, index);
+        etList.Add(index);
     }
 }
 
-class Pair<T1, T2> : IComparable<Pair<T1, T2>>
+
+public class Pair<T1, T2> : IComparable<Pair<T1, T2>>
 {
     public T1 v1 { get; set; }
     public T2 v2 { get; set; }
-    public Pair() : this(default(T1), default(T2)) { }
+    public Pair() { v1 = Input.Next<T1>(); v2 = Input.Next<T2>(); }
     public Pair(T1 v1, T2 v2)
     { this.v1 = v1; this.v2 = v2; }
 
@@ -73,4 +85,20 @@ class Pair<T1, T2> : IComparable<Pair<T1, T2>>
     }
     public override string ToString()
         => $"{v1.ToString()} {v2.ToString()}";
+    public override bool Equals(object obj)
+        => this == (Pair<T1, T2>)obj;
+    public override int GetHashCode()
+        => v1.GetHashCode() ^ v2.GetHashCode();
+    public static bool operator ==(Pair<T1, T2> p1, Pair<T1, T2> p2)
+        => p1.CompareTo(p2) == 0;
+    public static bool operator !=(Pair<T1, T2> p1, Pair<T1, T2> p2)
+        => p1.CompareTo(p2) != 0;
+    public static bool operator >(Pair<T1, T2> p1, Pair<T1, T2> p2)
+        => p1.CompareTo(p2) == 1;
+    public static bool operator >=(Pair<T1, T2> p1, Pair<T1, T2> p2)
+        => p1.CompareTo(p2) != -1;
+    public static bool operator <(Pair<T1, T2> p1, Pair<T1, T2> p2)
+        => p1.CompareTo(p2) == -1;
+    public static bool operator <=(Pair<T1, T2> p1, Pair<T1, T2> p2)
+        => p1.CompareTo(p2) != 1;
 }
