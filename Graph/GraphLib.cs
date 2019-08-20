@@ -21,81 +21,6 @@ public class GraphLib
             t &= IsBipartite(edge, ad, color, 3 - c);
         return t;
     }
-    /// <summary>
-    /// 有向グラフに対して、その転置グラフを求めます
-    /// </summary>
-    /// <param name="adj"></param>
-    /// <returns></returns>
-    public static List<int>[] Reverse(IList<IEnumerable<int>> adj)
-    {
-        var list = Enumerable.Repeat(0, adj.Count).Select(_ => new List<int>()).ToArray();
-        for (var i = 0; i < adj.Count; i++)
-            foreach (var ad in adj[i])
-                list[ad].Add(i);
-        return list;
-    }
-    /// <summary>
-    /// DAGを順番を守ったままリストに変換します
-    /// </summary>
-    /// <param name="adj"></param>
-    /// <returns></returns>
-    public static List<int> TopologicalSort(IList<IEnumerable<int>> adj)
-    {
-        var res = new List<int>(adj.Count);
-        var th = new bool[adj.Count];
-        for (var i = 0; i < adj.Count; i++)
-            if (!th[i])
-                Topodfs(adj, i, th, res);
-        res.Reverse();
-        return res;
-    }
-    private static void Topodfs(IList<IEnumerable<int>> adj, int index, bool[] th, List<int> res)
-    {
-        th[index] = true;
-        foreach (var ad in adj[index])
-            if (!th[ad])
-                Topodfs(adj, ad, th, res);
-        res.Add(index);
-    }
-    /// <summary>
-    /// 各頂点がどの強連結成分に属しているかを求めます
-    /// </summary>
-    /// <param name="adj"></param>
-    /// <param name="ct">成分の総数</param>
-    /// <returns></returns>
-    public static int[] SCC(IList<IEnumerable<int>> adj, out int ct)
-    {
-        var rev = Reverse(adj);
-        var th = new bool[adj.Count];
-        var st = new Stack<int>();
-        for (var i = 0; i < adj.Count; i++)
-            if (!th[i])
-                SCCdfs(adj, i, st, th);
-        var res = Enumerable.Repeat(-1, adj.Count).ToArray();
-        ct = 0;
-        while (st.Any())
-        {
-            SCCrdfs(rev, st.Pop(), res, ct++);
-            while (st.Any() && res[st.Peek()] != -1)
-                st.Pop();
-        }
-        return res;
-    }
-    private static void SCCdfs(IList<IEnumerable<int>> adj, int index, Stack<int> st, bool[] th)
-    {
-        th[index] = true;
-        foreach (var ad in adj[index])
-            if (!th[ad])
-                SCCdfs(adj, ad, st, th);
-        st.Push(index);
-    }
-    private static void SCCrdfs(IList<IEnumerable<int>> rev, int index, int[] res, int ct)
-    {
-        res[index] = ct;
-        foreach (var ad in rev[index])
-            if (res[ad] == -1)
-                SCCrdfs(rev, ad, res, ct);
-    }
     
     /// <summary>
     /// 依存:Pair
@@ -162,11 +87,11 @@ public class GraphLib
 }
 
 
-class Pair<T1, T2> : IComparable<Pair<T1, T2>>
+public class Pair<T1, T2> : IComparable<Pair<T1, T2>>
 {
     public T1 v1 { get; set; }
     public T2 v2 { get; set; }
-    public Pair() : this(default(T1), default(T2)) { }
+    public Pair() { v1 = Input.Next<T1>(); v2 = Input.Next<T2>(); }
     public Pair(T1 v1, T2 v2)
     { this.v1 = v1; this.v2 = v2; }
 
@@ -179,5 +104,20 @@ class Pair<T1, T2> : IComparable<Pair<T1, T2>>
     }
     public override string ToString()
         => $"{v1.ToString()} {v2.ToString()}";
+    public override bool Equals(object obj)
+        => this == (Pair<T1, T2>)obj;
+    public override int GetHashCode()
+        => v1.GetHashCode() ^ v2.GetHashCode();
+    public static bool operator ==(Pair<T1, T2> p1, Pair<T1, T2> p2)
+        => p1.CompareTo(p2) == 0;
+    public static bool operator !=(Pair<T1, T2> p1, Pair<T1, T2> p2)
+        => p1.CompareTo(p2) != 0;
+    public static bool operator >(Pair<T1, T2> p1, Pair<T1, T2> p2)
+        => p1.CompareTo(p2) == 1;
+    public static bool operator >=(Pair<T1, T2> p1, Pair<T1, T2> p2)
+        => p1.CompareTo(p2) != -1;
+    public static bool operator <(Pair<T1, T2> p1, Pair<T1, T2> p2)
+        => p1.CompareTo(p2) == -1;
+    public static bool operator <=(Pair<T1, T2> p1, Pair<T1, T2> p2)
+        => p1.CompareTo(p2) != 1;
 }
-
