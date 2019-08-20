@@ -4,7 +4,7 @@ using System.Linq;
 
 public class DirectedGraph
 {
-    private List<int>[] adj, rev;
+    public List<int>[] adj, rev;
     private List<int> topoList;
     private Stack<int> st;
     private int[] scc;
