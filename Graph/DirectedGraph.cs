@@ -32,7 +32,7 @@ public class DirectedGraph
     /// DAGであるか（閉路を持たないか)を判定します
     /// </summary>
     /// <returns></returns>
-    public bool isDAG()
+    public bool IsDAG()
     {
         topoList = topoList ?? TopologicalSort();
         return topoList.Count == Count;
