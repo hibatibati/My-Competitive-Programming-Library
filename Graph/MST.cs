@@ -5,7 +5,7 @@ using System.Linq;
 public class MST
 {
     /// <summary>
-    /// 最小全域木の重みをO(ElogE)で求める
+    /// 最小全域木の重みをO(ElogV)で求める
     /// 依存:UnionFind
     /// </summary>
     /// <param name="num">頂点数</param>
@@ -46,6 +46,43 @@ public class MST
             foreach (var e in edge[p.v2])
                 if (!th[e.v2])
                     pq.Enqueue(e);
+        }
+        return res;
+    }
+    /// <summary>
+    /// 最小全域木のコストを求めます
+    /// 依存:UnionFind,Pair
+    /// </summary>
+    /// <param name="num">頂点数</param>
+    /// <param name="func">(連結成分数,頂点がどの連結成分に属しているか)->(連結成分とそれ以外の連結成分を繋ぐ最小の辺）となる関数</param>
+    /// <returns></returns>
+    public static long Boruvka(int num, Func<int, int[], Pair<long, int>[]> func)
+    {
+        var uf = new UnionFind(num);
+        var res = 0L;
+        var rev = new int[num];
+        var parent = new int[num];
+        while (true)
+        {
+            var update = false;
+            var c = 0;
+            for (var i = 0; i < num; i++)
+                if (i == uf.Parent(i))
+                {
+                    rev[c] = i;
+                    parent[i] = c++;
+                }
+            for (var i = 0; i < num; i++)
+                parent[i] = parent[uf.Parent(i)];
+            var pair = func(c, parent);
+            for (var i = 0; i < c; i++)
+                if (pair[i].v2 != -1 && !uf.IsSame(rev[pair[i].v2], rev[i]))
+                {
+                    uf.Union(rev[pair[i].v2], rev[i]);
+                    res += pair[i].v1;
+                    update = true;
+                }
+            if (!update) break;
         }
         return res;
     }
@@ -150,11 +187,11 @@ class PriorityQueue<T> where T : IComparable<T>
     }
 }
 
-class Pair<T1, T2> : IComparable<Pair<T1, T2>>
+public class Pair<T1, T2> : IComparable<Pair<T1, T2>>
 {
     public T1 v1 { get; set; }
     public T2 v2 { get; set; }
-    public Pair() : this(default(T1), default(T2)) { }
+    public Pair() { v1 = Input.Next<T1>(); v2 = Input.Next<T2>(); }
     public Pair(T1 v1, T2 v2)
     { this.v1 = v1; this.v2 = v2; }
 
@@ -167,6 +204,22 @@ class Pair<T1, T2> : IComparable<Pair<T1, T2>>
     }
     public override string ToString()
         => $"{v1.ToString()} {v2.ToString()}";
+    public override bool Equals(object obj)
+        => this == (Pair<T1, T2>)obj;
+    public override int GetHashCode()
+        => v1.GetHashCode() ^ v2.GetHashCode();
+    public static bool operator ==(Pair<T1, T2> p1, Pair<T1, T2> p2)
+        => p1.CompareTo(p2) == 0;
+    public static bool operator !=(Pair<T1, T2> p1, Pair<T1, T2> p2)
+        => p1.CompareTo(p2) != 0;
+    public static bool operator >(Pair<T1, T2> p1, Pair<T1, T2> p2)
+        => p1.CompareTo(p2) == 1;
+    public static bool operator >=(Pair<T1, T2> p1, Pair<T1, T2> p2)
+        => p1.CompareTo(p2) != -1;
+    public static bool operator <(Pair<T1, T2> p1, Pair<T1, T2> p2)
+        => p1.CompareTo(p2) == -1;
+    public static bool operator <=(Pair<T1, T2> p1, Pair<T1, T2> p2)
+        => p1.CompareTo(p2) != 1;
 }
 
 class Pair<T1, T2, T3> : Pair<T1, T2>, IComparable<Pair<T1, T2, T3>>
