@@ -19,6 +19,7 @@ verifyはされていないので注意してください
   - MST(Minimum Spanning Tree)
     - Kruskal
     - Prim
+    - Boruvka
   - DirectedGraph
     - TopologicalSort
     - Strongly Connected Components
@@ -50,7 +51,6 @@ verifyはされていないので注意してください
   
 - Todo
   - コメント
-  - ブルーフカ法
   - 平衡二分木(Treap,RBT)
   - フロー系
   - フィボナッチヒープ
