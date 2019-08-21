@@ -4,16 +4,26 @@ using System.Linq;
 
 public class Tree
 {
-    private IList<IEnumerable<Pair<long, int>>> edge;
+    public List<Pair<long, int>>[] edge;
     private List<int> etList;
-    public int Count { get { return edge.Count(); } }
-    public Tree(IList<IEnumerable<Pair<long, int>>> edge)
+    public int Count { get; }
+    public Tree(int num)
     {
-        this.edge = edge;
+        Count = num;
+        edge = Enumerable.Repeat(0, num).Select(_ => new List<Pair<long, int>>()).ToArray();
     }
-    public Tree(IList<IEnumerable<int>> edge)
+    /// <summary>
+    /// 辺を追加します
+    /// </summary>
+    /// <param name="u"></param>
+    /// <param name="v"></param>
+    /// <param name="weight"></param>
+    /// <param name="directed">有向辺か</param>
+    public void AddEdge(int u, int v, long weight = 1, bool directed = false)
     {
-        this.edge = edge.Select(adj => adj.Select(v => new Pair<long, int>(1, v))).ToArray();
+        edge[u].Add(new Pair<long, int>(weight, v));
+        if (!directed)
+            edge[v].Add(new Pair<long, int>(weight, u));
     }
     /// <summary>
     /// 木の直径をO(E)で求める
@@ -26,7 +36,7 @@ public class Tree
     //bfsなのはStackOverFlow対策(ACならdfsでもよい)
     private Pair<long, int> Diameter(int st)
     {
-        var dist = Enumerable.Repeat(-1L, edge.Count).ToArray();
+        var dist = Enumerable.Repeat(-1L, Count).ToArray();
         dist[st] = 0;
         var que = new Queue<int>();
         que.Enqueue(st);
@@ -53,7 +63,7 @@ public class Tree
     /// <returns></returns>
     public List<int> EularTour(int root)
     {
-        etList = new List<int>(edge.Count * 2);
+        etList = new List<int>(Count * 2);
         EularTour(root, -1);
         return etList;
     }
@@ -66,7 +76,6 @@ public class Tree
         etList.Add(index);
     }
 }
-
 
 public class Pair<T1, T2> : IComparable<Pair<T1, T2>>
 {
