@@ -19,14 +19,15 @@ verifyはされていないので注意してください
   - MST(Minimum Spanning Tree)
     - Kruskal
     - Prim
+  - DirectedGraph
+    - TopologicalSort
+    - Strongly Connected Components
+    - IsDAG(DAG判定)
   - Tree
     - Diameter
     - EulerTour
   - GraphLib
     - IsBipartite(二部グラフ判定)
-    - Reverse(転置グラフ)
-    - TopologicalSort
-    - SCC(Strongly Connected Components)
     - LowLink(関節点、橋)
 - Math
   - NumberTheory
