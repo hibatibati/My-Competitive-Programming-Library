@@ -8,6 +8,7 @@ verifyはされていないので注意してください
   - WeightedUnionFind
   - BinaryIndexedTree
   - SegmentTree
+  - LazySegmentTree
   - ModInt
   - MinMaxHeap
   - PersistentStack
@@ -56,8 +57,6 @@ verifyはされていないので注意してください
   - フィボナッチヒープ
   - 謎木
   - HL分解,LCA
-  - 遅延セグ木
-  - 非再帰セグ木
   - SparseTable
   - RadixHeap
   - SkewHeap
