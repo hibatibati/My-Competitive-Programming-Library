@@ -32,7 +32,7 @@ public class Other
         //座圧
         var dic = CoordinateComp(ar, 1);
         var bit = new BIT(ar.Length + 1);
-        var res = 0;
+        var res = 0L;
         for (var i = 0; i < ar.Length; i++)
         {
             var t = bit[dic[ar[i]]];
