@@ -18,7 +18,7 @@ namespace DataStructure
         {
             for (var i = Convert.ToString(C.MaxValue, 2).Length; i >= 0; i--)
                 if ((1 & a >> i) == 1)
-                    return i;
+                    return i+1;
             return 0;
         }
         public void Push(Pair<C, T> p)
