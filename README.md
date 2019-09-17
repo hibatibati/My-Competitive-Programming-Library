@@ -11,6 +11,7 @@ verifyはされていないので注意してください
   - LazySegmentTree
   - ModInt
   - MinMaxHeap
+  - RadixHeap
   - PersistentStack
 - Graph
   - ShortestPath
@@ -58,5 +59,4 @@ verifyはされていないので注意してください
   - 謎木
   - HL分解,LCA
   - SparseTable
-  - RadixHeap
   - SkewHeap
