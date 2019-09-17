@@ -4,6 +4,7 @@ using System.Linq;
 
 /// <summary>
 /// Monoid:funcに対して区間更新/区間取得がO(log(要素数))でできるデータ構造
+/// 依存:SegmentTree
 /// </summary>
 /// <typeparam name="T"></typeparam>
 public class LazySegmentTree<T> : SegmentTree<T>
