@@ -29,6 +29,7 @@ verifyはされていないので注意してください
   - Tree
     - Diameter
     - EulerTour
+    - LCA
   - GraphLib
     - IsBipartite(二部グラフ判定)
     - LowLink(関節点、橋)
@@ -57,6 +58,6 @@ verifyはされていないので注意してください
   - フロー系
   - フィボナッチヒープ
   - 謎木
-  - HL分解,LCA
+  - HL分解
   - SparseTable
   - SkewHeap
