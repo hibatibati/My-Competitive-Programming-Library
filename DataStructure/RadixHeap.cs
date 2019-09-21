@@ -10,13 +10,15 @@ namespace DataStructure
         public int Count { get; set; }
         private C last;
         private List<Pair<C, T>>[] v;
+        private int len;
         public RadixHeap()
         {
-            v = Enumerable.Repeat(0, Convert.ToString(C.MaxValue, 2).Length + 2).Select(_ => new List<Pair<C, T>>()).ToArray();
+            len=Convert.ToString(C.MaxValue, 2).Length;
+            v = Enumerable.Repeat(0, len + 2).Select(_ => new List<Pair<C, T>>()).ToArray();
         }
         private int GetBit(C a)
         {
-            for (var i = Convert.ToString(C.MaxValue, 2).Length; i >= 0; i--)
+            for (var i = len; i >= 0; i--)
                 if ((1 & a >> i) == 1)
                     return i+1;
             return 0;
