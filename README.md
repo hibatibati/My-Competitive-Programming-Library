@@ -12,6 +12,7 @@ verifyはされていないので注意してください
   - ModInt
   - MinMaxHeap
   - RadixHeap
+  - SkewHeap
   - PersistentStack
 - Graph
   - ShortestPath
@@ -41,6 +42,7 @@ verifyはされていないので注意してください
     - PrimeList(PrimeEnumeration)
     - Factorize
   - Modulo(Modulo Operation)
+  
 - String
   - RollingHash
 - BinarySearch
@@ -60,4 +62,3 @@ verifyはされていないので注意してください
   - 謎木
   - HL分解
   - SparseTable
-  - SkewHeap
