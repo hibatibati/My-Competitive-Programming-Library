@@ -10,8 +10,17 @@ public class SkewHeap<T> where T : IComparable<T>
     public T Top { get { return root.Key; } }
     public SkewHeap(bool isMax = false)
     { IsMax = isMax; }
-    public int Compare(T v1, T v2) => (IsMax ? 1 : -1) * v1.CompareTo(v2);
-    public void Swap<U>(ref U v1, ref U v2) { var t = v1; v1 = v2; v2 = t; }
+    private SkewHeap(Node r,bool isMax)
+    { root = r;IsMax = isMax; }
+    private int Compare(T v1, T v2) => (IsMax ? 1 : -1) * v1.CompareTo(v2);
+    private void Swap<U>(ref U v1, ref U v2) { var t = v1; v1 = v2; v2 = t; }
+    /// <summary>
+    /// heap同士のマージを行います
+    /// 計算量:O(logN)
+    /// </summary>
+    /// <param name="sh"></param>
+    public void Merge(SkewHeap<T> sh)
+    { root = Merge(root, sh.root); Count += sh.Count; }
     private Node Merge(Node x, Node y)
     {
         if (x == null || y == null)
@@ -22,8 +31,17 @@ public class SkewHeap<T> where T : IComparable<T>
         Swap(ref x.left, ref x.right);
         return x;
     }
+    /// <summary>
+    /// 要素を追加します
+    /// 計算量:O(logN)
+    /// </summary>
+    /// <param name="key"></param>
     public void Push(T key)
     { root = Merge(root, new Node(key)); Count++; }
+    /// <summary>
+    /// 一番大きい要素を取り出します
+    /// </summary>
+    /// <returns></returns>
     public T Pop()
     {
         var ret = root.Key;
