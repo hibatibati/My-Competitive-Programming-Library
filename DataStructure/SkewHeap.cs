@@ -49,6 +49,8 @@ public class SkewHeap<T> where T : IComparable<T>
         Count--;
         return ret;
     }
+    public void Clear()
+    {   root = null; Count = 0; }
     class Node
     {
         public T Key { get; set; }
