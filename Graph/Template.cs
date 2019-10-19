@@ -27,6 +27,7 @@ namespace Graph
     public interface IVertex
     {
         int Id { get; }
+        int ToId();
     }
     public class Edge
     {
