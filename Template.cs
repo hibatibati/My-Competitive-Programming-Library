@@ -15,6 +15,9 @@ public class Template
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void swap<T>(ref T v1, ref T v2)
     { var t = v2; v2 = v1; v1 = t; }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T[] Create<T>(int n, Func<T> f)
+        => Enumerable.Repeat(0, n).Select(_ => f()).ToArray();      
     public static void Fail() => Fail("No");
     public static void Fail<T>(T s) { WriteLine(s); Console.Out.Close(); Environment.Exit(0); }
 }
