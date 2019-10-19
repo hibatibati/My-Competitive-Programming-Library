@@ -24,10 +24,9 @@ namespace Graph
 
     public interface IWeight<T> where T : IComparable<T> { T Weight { get; set; } }
     public interface INNegWeight<T> : IWeight<T> where T : IComparable<T> { }
-    public interface IEdge
+    public interface IVertex
     {
-        int From { get; }
-        int To { get; }
+        int Id { get; }
     }
     public class Edge
     {
