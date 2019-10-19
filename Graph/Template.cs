@@ -7,85 +7,35 @@ using System.Runtime.CompilerServices;
 namespace Graph
 {
     #region テンプレート
-    public class UnWeightedGraph
+    public class Graph<E> where E : Edge
     {
-        public List<int>[] edges { get; set; }
-        public int Count { get; set; }
-        public bool IsDirected { get; set; }
-        public List<int> this[int index]
-        { get { return edges[index]; } }
-        public UnWeightedGraph(int length, bool isDirected = false)
-        {
-            edges = Enumerable.Repeat(0, length).Select(_ => new List<int>()).ToArray();
-            Count = length;
-            IsDirected = isDirected;
-        }
-        private UnWeightedGraph(List<int>[] edges)
-        { this.edges = edges; }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AddEdge(int from, int to)
-        {
-            edges[from].Add(to);
-            if (!IsDirected)
-                edges[to].Add(from);
-        }
-        public static implicit operator UnWeightedGraph(List<int>[] edges)
-            => new UnWeightedGraph(edges);
-    }
-
-    public class WeightedGraph<T> where T : IComparable<T>
-    {
-        public List<Edge<T>>[] edges { get; set; }
+        public List<E>[] Edges { get; set; }
         public int Count { get; }
-        public bool IsDirected { get; set; }
-        public List<Edge<T>> this[int index]
-        { get { return edges[index]; } }
-        public WeightedGraph(int length, bool isDirected = false)
+        public Graph(int count)
         {
-            edges = Enumerable.Repeat(0, length).Select(_ => new List<Edge<T>>()).ToArray();
-            Count = length;
-            IsDirected = isDirected;
-        }
-        private WeightedGraph(List<Edge<T>>[] edges)
-        { this.edges = edges; }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AddEdge(int from, int to, T cost)
-        {
-            edges[from].Add(new Edge<T>(to, cost));
-            if (!IsDirected)
-                edges[to].Add(new Edge<T>(from, cost));
-        }
-        public static implicit operator WeightedGraph<T>(List<Edge<T>>[] edges)
-            => new WeightedGraph<T>(edges);
-    }
-    //隣接行列で持つ
-    public class DenceGraph<T> where T : IComparable<T>
-    {
-        public T[][] edges { get; set; }
-        public int Count { get; }
-        public T[] this[int index]
-        { get { return edges[index]; } }
-        public DenceGraph(int length)
-        {
-            edges = Enumerable.Repeat(0, length).Select(_ => new T[length]).ToArray();
-            Count = length;
+            Count = count;
+            Edges = Create(count, () => new List<E>());
         }
     }
+    public class Directed<E> : Graph<E> where E : Edge
+    { public Directed(int count) : base(count) { } }
+    public class Undirected<E> : Graph<E> where E : Edge
+    { public Undirected(int count) : base(count) { } }
 
-    public struct Edge<T> : IComparable<Edge<T>> where T : IComparable<T>
+    public interface IWeight<T> where T : IComparable<T> { T Weight { get; set; } }
+    public interface INNegWeight<T> : IWeight<T> where T : IComparable<T> { }
+    public interface IEdge
+    {
+        int From { get; }
+        int To { get; }
+    }
+    public class Edge
     {
         public int From { get; set; }
         public int To { get; set; }
-        public T Cost { get; set; }
-        public Edge(int to, T cost) : this(-1, to, cost) { }
-        public Edge(int from, int to, T cost)
-        { From = from; To = to; Cost = cost; }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator int(Edge<T> e)
-            => e.To;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int CompareTo(Edge<T> e)
-            => Cost.CompareTo(e.Cost);
+        public Edge(int from, int to)
+        { From = from; To = to; }
     }
     #endregion
 }
