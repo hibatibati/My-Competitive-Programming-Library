@@ -8,38 +8,58 @@ namespace Graph
 {
     using Number = System.Int64;
     #region 密なグラフでのダイクストラ
-    public class Dijkstra_Dence
+    public abstract class DijEdge<W> : Edge, INNegWeight<W> where W : IComparable<W>
     {
-        private Graph<DijEdge> g;
-        public Dijkstra_Dence(int c) { g = new Graph<DijEdge>(c); }
+        public static W Zero, Inf;
+        public W Weight { get; set; }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AddEdge(int from, int to, Number weight)
-         => g.Edges[from].Add(new DijEdge(from, to, weight));
-        public Number[] Calc(int st = 0)
+        public abstract W Add(W w);
+        public DijEdge(int from, int to, W weight) : base(from, to)
+        { Weight = weight; }
+    }
+
+    public class Dijkstra_Dence<W, DEdge> where W : IComparable<W> where DEdge : DijEdge<W>
+    {
+        private Graph<DEdge> g;
+        public Dijkstra_Dence(int c) { g = new Graph<DEdge>(c); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void AddEdge(DEdge e)
+         => g.Edges[e.From].Add(e);
+        public W[] Execute(int st = 0)
         {
-            var dist = Create(g.Count, () => Number.MaxValue);
-            dist[st] = 0;
+            var dist = Create(g.Count, () => DijEdge<W>.Inf);
+            dist[st] = DijEdge<W>.Zero;
             var use = new bool[g.Count];
             while (true)
             {
-                Number min = Number.MaxValue; int minj = -1;
+                var min = DijEdge<W>.Inf; int minj = -1;
                 for (var i = 0; i < g.Count; i++)
                     if (!use[i] && chmin(ref min, dist[i]))
                         minj = i;
                 if (minj == -1) break;
                 use[minj] = true;
                 foreach (var e in g.Edges[minj])
-                    chmin(ref dist[e.To], e.Weight + min);
+                    chmin(ref dist[e.To], e.Add(min));
             }
             return dist;
         }
-
-        public class DijEdge : Edge, INNegWeight<Number>
+    }
+    public class Dijkstra_Dence
+    {
+        private Dijkstra_Dence<Number, DijEdge> dij;
+        public Dijkstra_Dence(int count)
+        { dij = new Dijkstra_Dence<Number, DijEdge>(count); }
+        public void AddEdge(int from, int to, Number weight)
+            => dij.AddEdge(new DijEdge(from, to, weight));
+        public Number[] Execute(int st = 0)
+            => dij.Execute(st);
+        public class DijEdge : DijEdge<Number>
         {
-            public Number Weight { get; set; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public DijEdge(int from, int to, Number weight) : base(from, to)
-            { Weight = weight; }
+            public override Number Add(Number w)
+                => Weight + w;
+            public DijEdge(int from, int to, Number weight) : base(from, to, weight)
+            { Zero = 0; Inf = Number.MaxValue; }
         }
     }
     #endregion
