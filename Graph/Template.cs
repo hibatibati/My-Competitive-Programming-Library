@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 namespace Graph
 {
     #region テンプレート
-    public class Graph<E> where E : Edge
+    public class Graph<E> where E : IEdge
     {
         public List<E>[] Edges { get; set; }
         public int Count { get; }
@@ -22,14 +22,18 @@ namespace Graph
     public class Undirected<E> : Graph<E> where E : Edge
     { public Undirected(int count) : base(count) { } }
 
-    public interface IWeight<T> where T : IComparable<T> { T Weight { get; set; } }
+    public interface IWeight<T> where T : IComparable<T> { T Weight { get; set; } T Add(T t); }
     public interface INNegWeight<T> : IWeight<T> where T : IComparable<T> { }
     public interface IVertex
     {
         int Id { get; }
-        int ToId();
     }
-    public class Edge
+    public interface IEdge
+    {
+        int From { get; set; }
+        int To { get; set; }
+    }
+    public class Edge : IEdge
     {
         public int From { get; set; }
         public int To { get; set; }
