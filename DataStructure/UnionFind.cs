@@ -16,7 +16,7 @@ public class UnionFind
         => Find(i);
     public int Size(int i)
         => size[Find(i)];
-    public bool Union(int v1, int v2)
+    public virtual bool Union(int v1, int v2)
     {
         v1 = Find(v1); v2 = Find(v2);
         if (v1 == v2) return false;
