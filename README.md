@@ -14,7 +14,7 @@ verifyはされていないので注意してください
   - RadixHeap
   - SkewHeap
   - PersistentStack
-- Graph(改造中で壊れている場合があります)
+- Graph(抽象グラフは改造中で壊れています)
   - ShortestPath
     - Dijkstra
     - WarshallFloyd
