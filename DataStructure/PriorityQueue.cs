@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.IO;
+using System.Runtime.CompilerServices;
 
 /// <summary>
 /// Enqueue/Dequeue:O(logN)
@@ -57,4 +60,6 @@ public class PriorityQueue<T>
         item.RemoveAt(item.Count - 1);
         return ret;
     }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool Any() => item.Count > 0;
 }
