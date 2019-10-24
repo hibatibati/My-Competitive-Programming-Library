@@ -6,14 +6,11 @@ using System.Runtime.CompilerServices;
 
 public class Input
 {
-    public static string read => ReadLine().Trim();
+    public static string read => Console.ReadLine().Trim();
     public static int[] ar => read.Split(' ').Select(int.Parse).ToArray();
-    public static int num => ToInt32(read);
+    public static int num => Convert.ToInt32(read);
     public static long[] arL => read.Split(' ').Select(long.Parse).ToArray();
-    public static long numL => ToInt64(read);
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T[] Create<T>(int n, Func<T> f)
-        => Enumerable.Repeat(0, n).Select(_ => f()).ToArray();
+    public static long numL => Convert.ToInt64(read);
     public static char[][] grid(int h)
         => Create(h, () => read.ToCharArray());
     public static int[] ar1D(int n)
