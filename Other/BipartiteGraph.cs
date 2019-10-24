@@ -1,5 +1,8 @@
 ﻿using System;
-
+/// <summary>
+/// 二部グラフ判定
+/// 依存:UnionFind
+/// </summary>
 public class BipartiteGraph : UnionFind
 {
     int num;
