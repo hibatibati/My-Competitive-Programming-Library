@@ -45,8 +45,6 @@ namespace Graph
         }
     }
 
-    public interface IWeight<T> where T : IComparable<T> { T Weight { get; set; } T Add(T t); }
-    public interface INNegWeight<T> : IWeight<T> where T : IComparable<T> { }
     public interface IVertex
     {
         int Id { get; }
