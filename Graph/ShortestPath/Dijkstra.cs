@@ -18,7 +18,7 @@ class Dijkstra
     public Number[] Execute(int st = 0)
     {
         var dist = Create(num, () => Number.MaxValue);
-        var pq = new PriorityQueue<Pair<int, long>>((a, b) => a.v2.CompareTo(b.v2));
+        var pq = new PriorityQueue<Pair<int, Number>>((a, b) => a.v2.CompareTo(b.v2));
         pq.Enqueue(new Pair<int, Number>(st, 0));
         dist[st] = 0;
         while (pq.Any())
