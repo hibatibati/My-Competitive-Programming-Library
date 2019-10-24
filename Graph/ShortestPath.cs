@@ -16,9 +16,9 @@ namespace Graph
         /// <param name="edges"></param>
         /// <param name="st">始点</param>
         /// <returns></returns>
-        public static Number[] Dijkstra(WeightedGraph<Number> edges, int st = 0)
+        public static Number[] Dijkstra(IList<Pair<Number, int>>[] edges, int st = 0)
         {
-            var dist = Enumerable.Repeat(Number.MaxValue, edges.Count).ToArray();
+            var dist = Enumerable.Repeat(Number.MaxValue, edges.Length).ToArray();
             var pq = new PriorityQueue<Pair<Number, int>>(false);
             pq.Enqueue(new Pair<Number, int>(0, st));
             dist[st] = 0;
@@ -27,8 +27,8 @@ namespace Graph
                 var p = pq.Dequeue();
                 if (dist[p.v2] < p.v1) continue;
                 foreach (var e in edges[p.v2])
-                    if (chmin(ref dist[e.To], e.Cost + p.v1))
-                        pq.Enqueue(new Pair<Number, int>(dist[e.To], e.To));
+                    if (chmin(ref dist[e.v2], e.v1 + p.v1))
+                        pq.Enqueue(new Pair<Number, int>(dist[e.v2], e.v2));
             }
             return dist;
         }
@@ -41,9 +41,9 @@ namespace Graph
         /// <param name="edges"></param>
         /// <param name="st"></param>
         /// <returns></returns>
-        public static Number[] RadixDijkstra(WeightedGraph<Number> edges, int st)
+        public static Number[] RadixDijkstra(IList<Pair<Number, int>>[] edges, int st)
         {
-            var dist = Enumerable.Repeat(Number.MaxValue, edges.Count).ToArray();
+            var dist = Enumerable.Repeat(Number.MaxValue, edges.Length).ToArray();
             var pq = new RadixHeap<int>();
             pq.Push(0, st);
             dist[st] = 0;
@@ -52,35 +52,8 @@ namespace Graph
                 var p = pq.Pop();
                 if (dist[p.v2] < p.v1) continue;
                 foreach (var e in edges[p.v2])
-                    if (chmin(ref dist[e.To], e.Cost + p.v1))
-                        pq.Push(dist[e.To], e.To);
-            }
-            return dist;
-        }
-        #endregion
-        #region 密なグラフでのダイクストラ
-        /// <summary>
-        /// 負の重みの辺を持たないグラフでの単一始点最短経路をO(V^2)で求める
-        /// </summary>
-        /// <param name="gr"></param>
-        /// <param name="st"></param>
-        /// <returns></returns>
-        public static Number[] Dijkstra(DenceGraph<Number> gr, int st)
-        {
-            var dist = Enumerable.Repeat(Number.MaxValue, gr.Count).ToArray();
-            dist[st] = 0;
-            var use = new bool[gr.Count];
-            while (true)
-            {
-                var min = Number.MaxValue;
-                var minj = -1;
-                for (var i = 0; i < gr.Count; i++)
-                    if (!use[i] && chmin(ref min, dist[i]))
-                        minj = i;
-                if (minj == -1) break;
-                use[minj] = true;
-                for (var i = 0; i < gr.Count; i++)
-                    chmin(ref dist[i], dist[minj] + gr[minj][i]);
+                    if (chmin(ref dist[e.v2], e.v1 + p.v1))
+                        pq.Push(dist[e.v2], e.v2);
             }
             return dist;
         }
@@ -93,14 +66,14 @@ namespace Graph
         /// <param name="edges">辺の集合</param>
         /// <param name="directed">有向グラフか</param>
         /// <returns></returns>
-        public static Number[][] WarshallFloyd(int num, IEnumerable<Edge<Number>> edges, bool directed = false)
+        public static Number[][] WarshallFloyd(int num, IEnumerable<Pair<Number, int, int>> edges, bool directed = false)
         {
             var dist = Enumerable.Repeat(0, num).Select(_ => Enumerable.Repeat(Number.MaxValue / 2, num).ToArray()).ToArray();
             foreach (var e in edges)
             {
-                dist[e.From][e.To] = e.Cost;
+                dist[e.v2][e.v3] = e.v1;
                 if (!directed)
-                    dist[e.To][e.From] = e.Cost;
+                    dist[e.v3][e.v2] = e.v1;
             }
             for (var k = 0; k < num; k++)
                 for (var i = 0; i < num; i++)
@@ -118,19 +91,19 @@ namespace Graph
         /// <param name="st">始点</param>
         /// <param name="dist">始点からの最短距離</param>
         /// <returns>始点から辿り着ける負閉路が存在した場合、false</returns>
-        static bool BellmanFord(int num, IEnumerable<Edge<Number>> edges, int st, out long[] dist)
+        static bool BellmanFord(int num, IEnumerable<Pair<Number, int, int>> edges, int st, out long[] dist)
         {
             dist = Enumerable.Repeat(long.MaxValue, num).ToArray();
             dist[st] = 0;
             for (var i = 0; i < num - 1; i++)
                 foreach (var e in edges)
-                    if (dist[e.From] != long.MaxValue)
-                        chmin(ref dist[e.To], dist[e.From] + e.Cost);
+                    if (dist[e.v2] != long.MaxValue)
+                        chmin(ref dist[e.v3], dist[e.v2] + e.v1);
             for (var i = 0; i < num; i++)
                 foreach (var e in edges)
                 {
-                    if (dist[e.From] == long.MaxValue) continue;
-                    if (dist[e.To] > dist[e.From] + e.Cost)
+                    if (dist[e.v2] == long.MaxValue) continue;
+                    if (dist[e.v3] > dist[e.v2] + e.v1)
                         return false;
                 }
             return true;
@@ -138,4 +111,3 @@ namespace Graph
         #endregion
     }
 }
-
