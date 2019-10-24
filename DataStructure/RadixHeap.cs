@@ -51,5 +51,6 @@ namespace DataStructure
             v[0].RemoveAt(v[0].Count - 1);
             return ret;
         }
+        public bool Any() => Count > 0;
     }
 }
