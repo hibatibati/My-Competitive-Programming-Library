@@ -4,65 +4,57 @@ using System.Collections.Generic;
 /// <summary>
 /// Enqueue/Dequeue:O(logN)
 /// Peek:O(1)
-/// Build:O(N)
 /// </summary>
-/// <typeparam name="T">Comparableな型</typeparam>
-public class PriorityQueue<T> where T : IComparable<T>
+/// <typeparam name="T"></typeparam>
+public class PriorityQueue<T>
 {
-    public List<T> _item;
-    public int Count { get { return _item.Count; } }
-    public bool IsMaxHeap { get; set; }
-    public T Peek { get { return _item[0]; } }
-    public PriorityQueue(bool IsMaxHeap = true, IEnumerable<T> list = null)
-    {
-        _item = new List<T>();
-        this.IsMaxHeap = IsMaxHeap;
-        if (list != null)
-        {
-            _item.AddRange(list);
-            Build();
-        }
-    }
-    private int Compare(int i, int j) => (IsMaxHeap ? 1 : -1) * _item[i].CompareTo(_item[j]);
-    private void Swap(int i, int j) { var t = _item[i]; _item[i] = _item[j]; _item[j] = t; }
+    private List<T> item = new List<T>();
+    private Comparison<T> cmp;
+    public int Count { get { return item.Count; } }
+    public T Peek { get { return item[0]; } }
+    public PriorityQueue() { cmp = Comparer<T>.Default.Compare; }
+
+    public PriorityQueue(Comparison<T> comparison) { cmp = comparison; }
+
+    public PriorityQueue(IComparer<T> comparer) { cmp = comparer.Compare; }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private int Parent(int i)
         => (i - 1) >> 1;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private int Left(int i)
         => (i << 1) + 1;
     public T Enqueue(T val)
     {
-        int i = _item.Count;
-        _item.Add(val);
+        int i = item.Count;
+        item.Add(val);
         while (i > 0)
         {
             int p = Parent(i);
-            if (Compare(i, p) > 0)
-                Swap(i, p);
+            if (cmp(item[p], val) <= 0)
+                break;
+            item[i] = item[p];
             i = p;
         }
+        item[i] = val;
         return val;
-    }
-    private void Heapify(int index)
-    {
-        for (int i = index, j; (j = Left(i)) < _item.Count; i = j)
-        {
-            if (j != _item.Count - 1 && Compare(j, j + 1) < 0) j++;
-            if (Compare(i, j) < 0)
-                Swap(i, j);
-        }
     }
     public T Dequeue()
     {
-        T val = _item[0];
-        _item[0] = _item[_item.Count - 1];
-        _item.RemoveAt(_item.Count - 1);
-        Heapify(0);
-        return val;
-    }
-    private void Build()
-    {
-        for (var i = (_item.Count >> 1) - 1; i >= 0; i--)
-            Heapify(i);
+        var ret = item[0];
+        var p = 0;
+        var x = item[item.Count - 1];
+        while (Left(p) < item.Count - 1)
+        {
+            var l = Left(p);
+            if (l < item.Count - 2 && cmp(item[l + 1], item[l]) < 0) l++;
+            if (cmp(item[l], x) >= 0)
+                break;
+            item[p] = item[l];
+            p = l;
+        }
+        item[p] = x;
+        item.RemoveAt(item.Count - 1);
+        return ret;
     }
 }
-
