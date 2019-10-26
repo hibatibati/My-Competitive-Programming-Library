@@ -9,9 +9,17 @@ public class StronglyConnectedComponents
     private List<int>[] g, rev;
     private Stack<int> st;
     private List<List<int>> scc;
+    private int[] group;
     private bool[] use;
+    public int Count { get; private set; }
+    public int this[int i] { get { return group[i]; } }
+    public List<int> KthGroup(int k) => scc[k];
     public StronglyConnectedComponents(int count)
-    { g = Create(count, () => new List<int>()); rev = Create(count, () => new List<int>()); }
+    {
+        g = Create(count, () => new List<int>());
+        rev = Create(count, () => new List<int>());
+        group = new int[count];
+    }
     public void AddEdge(int from, int to)
     {
         g[from].Add(to);
@@ -33,6 +41,7 @@ public class StronglyConnectedComponents
         while (st.Any())
         {
             scc.Add(new List<int>());
+            Count++;
             dfs2(st.Pop());
             while (st.Any() && use[st.Peek()])
                 st.Pop();
@@ -49,6 +58,7 @@ public class StronglyConnectedComponents
     }
     private void dfs2(int index)
     {
+        group[index] = Count;
         use[index] = true;
         scc[scc.Count - 1].Add(index);
         foreach (var e in rev[index])
