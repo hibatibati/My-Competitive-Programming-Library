@@ -7,7 +7,7 @@
 public class BipartiteGraph : UnionFind
 {
     int num;
-    public bool this[int i] { get { return IsSame(0, i); } }
+    public override int this[int i] { get { return Find(0) == Find(i) ? 1 : 0; } }
     public BipartiteGraph(int num) : base(num << 1)
     { this.num = num; }
     public bool Coloring()
