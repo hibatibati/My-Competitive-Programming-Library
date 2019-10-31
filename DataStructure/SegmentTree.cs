@@ -114,4 +114,28 @@ public class SegmentTree<T>
         else
             return func(Query(left, right, Left(k), l, (l + r) >> 1), Query(left, right, Right(k), (l + r) >> 1, r));
     }
+
+    /// <summary>
+    /// check(func(item[st]...item[i]))がtrueとなる最小のiを求めます
+    /// </summary>
+    public int Find(int st, Func<T, bool> check)
+    {
+        var x = init;
+        return Find(st, check, ref x, 0, 0, num);
+    }
+    private int Find(int st, Func<T, bool> check, ref T x, int k, int l, int r)
+    {
+        if (l + 1 == r)
+        {
+            x = func(x, item[k]);
+            return check(x) ? k - num + 1 : -1;
+        }
+        var m = (l + r) >> 1;
+        if (m <= st) return Find(st, check, ref x, Right(k), m, r);
+        if (st <= l && !check(func(x, item[k])))
+        { x = func(x, item[k]); return -1; }
+        var xl = Find(st, check, ref x, Left(k), l, m);
+        if (xl >= 0) return xl;
+        return Find(st, check, ref x, Right(k), m, r);
+    }
 }
