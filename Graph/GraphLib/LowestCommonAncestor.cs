@@ -23,23 +23,26 @@ class LowestCommonAncestor
                 break;
         parent = Create(lb + 1, () => Create(num, () => -1));
         depth = new int[num];
-        PreDFS(root, -1);
+        var st = new Stack<int>();
+        st.Push(-1);
+        st.Push(root);
+        while (st.Any())
+        {
+            int i = st.Pop(), p = st.Pop();
+            parent[0][i] = p;
+            foreach (var e in edge[i])
+                if (e != p)
+                {
+                    depth[e] = depth[i] + 1;
+                    st.Push(i); st.Push(e);
+                }
+        }
         for (var i = 1; i <= lb; i++)
             for (var j = 0; j < num; j++)
                 if (parent[i - 1][j] != -1)
                 {
                     parent[i][j] = parent[i - 1][parent[i - 1][j]];
                 }
-    }
-    private void PreDFS(int index, int p)
-    {
-        parent[0][index] = p;
-        foreach (var e in edge[index])
-            if (e != p)
-            {
-                depth[e] = depth[index] + 1;
-                PreDFS(e, index);
-            }
     }
     public int LCA(int u, int v)
     {
