@@ -7,6 +7,7 @@ verifyはされていないので注意してください
   - UnionFind
   - WeightedUnionFind
   - BinaryIndexedTree
+  - BIT2D
   - SegmentTree
   - LazySegmentTree
   - ModInt
@@ -62,6 +63,4 @@ verifyはされていないので注意してください
   - 謎木
   - HL分解
   - SparseTable
-  - セグ木上の二分探索
   - UndoableUnionFind(Undo可能なUnionFind)
-  - BIT2D
