@@ -1,6 +1,6 @@
 ## 競技プログラミングで用いるC#のライブラリ
 verifyはされていないので注意してください
-  
+- Mono 4.6.2.0
 - Data Structure
   - Deque
   - PriorityQueue
@@ -27,15 +27,14 @@ verifyはされていないので注意してください
   - DirectedGraph
     - TopologicalSort
     - Strongly Connected Components
-    - IsDAG(DAG判定)
   - Tree
     - Diameter
-    - EulerTour
     - LCA
   - GraphLib
-    - IsBipartite(二部グラフ判定)
+    - BipartiteGraph(二部グラフ判定)
     - LowLink(関節点、橋)
 - Math
+  - Matrix
   - NumberTheory
     - GCD
     - LCM
