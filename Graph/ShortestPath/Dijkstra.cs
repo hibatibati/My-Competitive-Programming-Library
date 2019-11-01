@@ -10,25 +10,35 @@ using System.Runtime.CompilerServices;
 class Dijkstra
 {
     private int num;
-    private List<Pair<Number, int>>[] edges;
+    private List<Edge>[] edges;
     public Dijkstra(int num)
-    { this.num = num; edges = Create(num, () => new List<Pair<Number, int>>()); }
+    { this.num = num; edges = Create(num, () => new List<Edge>()); }
     public void AddEdge(int from, int to, Number weight)
-        => edges[from].Add(new Pair<Number, int>(weight, to));
+        => edges[from].Add(new Edge(to, weight));
     public Number[] Execute(int st = 0)
     {
         var dist = Create(num, () => Number.MaxValue);
-        var pq = new PriorityQueue<Pair<Number, int>>((a, b) => a.v1.CompareTo(b.v1));
-        pq.Enqueue(new Pair<Number, int>(0, st));
+        var pq = new PriorityQueue<Edge>();
+        pq.Enqueue(new Edge(st, 0));
         dist[st] = 0;
         while (pq.Any())
         {
             var p = pq.Dequeue();
-            if (p.v1 > dist[p.v2]) continue;
-            foreach (var e in edges[p.v2])
-                if (chmin(ref dist[e.v2], e.v1 + p.v1))
-                    pq.Enqueue(new Pair<Number, int>(dist[e.v2], e.v2));
+            if (p.cost > dist[p.to]) continue;
+            foreach (var e in edges[p.to])
+                if (chmin(ref dist[e.to], e.cost + p.cost))
+                    pq.Enqueue(new Edge(e.to, dist[e.to]));
         }
         return dist;
+    }
+
+    struct Edge : IComparable<Edge>
+    {
+        public int to;
+        public Number cost;
+        public Edge(int to, Number cost)
+        { this.to = to; this.cost = cost; }
+        public int CompareTo(Edge e)
+            => cost.CompareTo(e.cost);
     }
 }
