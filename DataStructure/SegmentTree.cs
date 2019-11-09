@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 /// <summary>
 /// 一点更新/区間取得、または区間更新/一点取得がO(logN)でできるデータ構造
@@ -12,12 +13,15 @@ public class SegmentTree<T>
     protected readonly int num;
     protected readonly Func<T, T, T> func;
     protected readonly Func<T, T, T> updateFunc;
-    protected readonly T init;
+    protected readonly T minT;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected int Parent(int index)
         => (index - 1) >> 1;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected int Left(int index)
         => (index << 1) + 1;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected int Right(int index)
         => (index + 1) << 1;
     public T this[int i]
@@ -26,24 +30,19 @@ public class SegmentTree<T>
         set { item[i + num - 1] = value; }
     }
 
-    public SegmentTree(int num, T init, Func<T, T, T> func, Func<T, T, T> updateFunc = null)
+    public SegmentTree(int num, T minT, Func<T, T, T> func, Func<T, T, T> updateFunc = null)
     {
         this.func = func;
         this.num = 1;
-        this.init = init;
+        this.minT = minT;
         this.updateFunc = updateFunc ?? ((T val1, T val2) => val2);
         while (this.num <= num)
-            this.num *= 2;
+            this.num <<= 1;
         item = new T[2 * this.num - 1];
         for (var i = 0; i < 2 * this.num - 1; i++)
-            item[i] = init;
+            item[i] = minT;
     }
-    /// <summary>
-    /// 一点更新
-    /// 計算量:O(logN)
-    /// </summary>
-    /// <param name="index"></param>
-    /// <param name="value"></param>
+
     public void Update(int index, T value)
     {
         index += num - 1;
@@ -54,13 +53,7 @@ public class SegmentTree<T>
             item[index] = func(item[Left(index)], item[Right(index)]);
         }
     }
-    /// <summary>
-    /// [left,right)間をvalueで更新
-    /// 計算量:O(logN)
-    /// </summary>
-    /// <param name="left"></param>
-    /// <param name="right"></param>
-    /// <param name="value"></param>
+
     public virtual void Update(int left, int right, T value)
         => Update(left, right, 0, 0, num, value);
     protected virtual void Update(int left, int right, int k, int l, int r, T value)
@@ -73,24 +66,17 @@ public class SegmentTree<T>
             Update(left, right, Right(k), (l + r) >> 1, r, value);
         }
     }
-    /// <summary>
-    ///　O(N)で構築
-    /// </summary>
+
     public void All_Update()
     {
         for (int i = num - 2; i >= 0; i--)
             item[i] = func(item[Left(i)], item[Right(i)]);
     }
-    /// <summary>
-    /// 一点取得
-    /// 計算量:O(logN)
-    /// </summary>
-    /// <param name="index"></param>
-    /// <returns></returns>
+
     public T Query(int index)
     {
         index += num - 1;
-        var value = func(init, item[index]);
+        var value = func(minT, item[index]);
         while (index > 0)
         {
             index = Parent(index);
@@ -98,29 +84,23 @@ public class SegmentTree<T>
         }
         return value;
     }
-    /// <summary>
-    /// 区間取得
-    /// 計算量:O(logN)
-    /// </summary>
-    /// <param name="left"></param>
-    /// <param name="right"></param>
-    /// <returns></returns>
+
     public virtual T Query(int left, int right)
         => Query(left, right, 0, 0, num);
     protected virtual T Query(int left, int right, int k, int l, int r)
     {
-        if (r <= left || right <= l) return init;
+        if (r <= left || right <= l) return minT;
         if (left <= l && r <= right) return item[k];
         else
             return func(Query(left, right, Left(k), l, (l + r) >> 1), Query(left, right, Right(k), (l + r) >> 1, r));
     }
 
     /// <summary>
-    /// check(func(item[st]...item[i]))がtrueとなる最小のiを求めます
+    /// check(func(item[st]...item[i]))がtrueとなる最小のi
     /// </summary>
     public int Find(int st, Func<T, bool> check)
     {
-        var x = init;
+        var x = minT;
         return Find(st, check, ref x, 0, 0, num);
     }
     private int Find(int st, Func<T, bool> check, ref T x, int k, int l, int r)
