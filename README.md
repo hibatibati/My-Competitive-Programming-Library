@@ -63,3 +63,4 @@ verifyはされていないので注意してください
   - HL分解
   - SparseTable
   - UndoableUnionFind(Undo可能なUnionFind)
+  - 部分永続UnionFind
