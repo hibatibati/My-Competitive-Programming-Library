@@ -10,18 +10,18 @@ public class BinarySearch
     /// <param name="array">ソート済みのリスト</param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static int UpperBound<T>(IList<T> array, T value)
-        where T : IComparable<T>
+    public static int UpperBound<T>(IList<T> array, T value, Comparison<T> cmp = null)
     {
-        var low = 0;
+        cmp = cmp ?? Comparer<T>.Default.Compare;
+        var low = -1;
         var high = array.Count;
-        while (high > low)
+        while (high - low > 1)
         {
             var mid = (high + low) / 2;
-            if (array[mid].CompareTo(value) == 1) high = mid;
-            else low = mid + 1;
+            if (cmp(array[mid], value) == 1) high = mid;
+            else low = mid;
         }
-        return low;
+        return high;
     }
     /// <summary>
     /// ある配列でvalue以上の値の内、最小の値を格納しているindexを求める
@@ -30,17 +30,17 @@ public class BinarySearch
     /// <param name="array">ソート済みのリスト</param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static int LowerBound<T>(IList<T> array, T value)
-        where T : IComparable<T>
+    public static int LowerBound<T>(IList<T> array, T value, Comparison<T> cmp = null)
     {
-        var low = 0;
+        cmp = cmp ?? Comparer<T>.Default.Compare;
+        var low = -1;
         var high = array.Count;
-        while (high > low)
+        while (high - low > 1)
         {
             var mid = (high + low) / 2;
-            if (array[mid].CompareTo(value) != -1) high = mid;
-            else low = mid + 1;
+            if (cmp(array[mid], value) != -1) high = mid;
+            else low = mid;
         }
-        return low;
+        return high;
     }
 }
