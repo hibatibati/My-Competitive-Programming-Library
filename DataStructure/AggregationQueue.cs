@@ -14,14 +14,15 @@ class AggregationQueue<T>
         front = new Stack<Node>();
         back = new Stack<Node>();
     }
+    public int Count => front.Count + back.Count;
     public bool Any() => front.Count > 0 || back.Count > 0;
     public T All_Fold()
     {
         if (!front.Any())
             return back.Peek().sum;
-        else if (!back.Any())
+        if (!back.Any())
             return front.Peek().sum;
-        else return f(front.Peek().sum, back.Peek().sum);
+        return f(front.Peek().sum, back.Peek().sum);
     }
     public void Push(T v)
     {
