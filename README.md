@@ -15,6 +15,7 @@ verifyはされていないので注意してください
   - RadixHeap
   - SkewHeap
   - PersistentStack
+  - AggregationQueue
 - Graph
   - ShortestPath
     - Dijkstra
@@ -49,7 +50,7 @@ verifyはされていないので注意してください
   - UpperBound
   - LowerBound
 - Other
-  - CoordinateComp(座標圧縮)
+  - Compression(座標圧縮)
   - Inversion(転倒数)
   - SlideMin(スライド最小値)
   - RLEncoding(ランレングス圧縮)
