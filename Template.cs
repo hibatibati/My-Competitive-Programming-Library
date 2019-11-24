@@ -17,7 +17,19 @@ public class Template
     { var t = v2; v2 = v1; v1 = t; }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T[] Create<T>(int n, Func<T> f)
-        => Enumerable.Repeat(0, n).Select(_ => f()).ToArray();      
-    public static void Fail() => Fail("No");
-    public static void Fail<T>(T s) { WriteLine(s); Console.Out.Close(); Environment.Exit(0); }
+    {
+        var rt = new T[n];
+        for (var i = 0; i < rt.Length; ++i)
+            rt[i] = f();
+        return rt;
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T[] Create<T>(int n, Func<int, T> f)
+    {
+        var rt = new T[n];
+        for (var i = 0; i < rt.Length; ++i)
+            rt[i] = f(i);
+        return rt;
+    }
+    public static void Fail<T>(T s) { Console.WriteLine(s); Console.Out.Close(); Environment.Exit(0); }
 }
