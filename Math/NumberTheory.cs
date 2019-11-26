@@ -32,25 +32,10 @@ public class NumberTheory
         return d;
     }
 
-    public static List<int> PrimeList(long num)
-    {
-        if (num < 2) return new List<int>();
-        var prime = new List<int> { 2 };
-        var bo = new bool[num + 1];
-        for (var i = 3; i <= num; i += 2)
-            if (!bo[i])
-            {
-                prime.Add(i);
-                for (var j = 3 * i; j <= num; j += 2 * i)
-                    bo[j] = true;
-            }
-        return prime;
-    }
-
     public static Dictionary<long, int> Factorize(long num)
     {
         var dic = new Dictionary<long, int>();
-        for (var i = 2; i * i <= num; i++)
+        for (var i = 2L; i * i <= num; i++)
         {
             var ct = 0;
             while (num % i == 0)
