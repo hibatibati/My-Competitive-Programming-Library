@@ -4,11 +4,13 @@
 /// </summary>
 public class UnionFind
 {
+    public int GroupCount { get; private set; }
     protected int[] parent;
     public virtual int this[int i] { get { return Find(i); } }
     public UnionFind(int num)
     {
         parent = new int[num];
+        GroupCount = num;
         for (var i = 0; i < num; i++)
             parent[i] = -1;
     }
@@ -22,6 +24,7 @@ public class UnionFind
         if (v1 == v2) return false;
         if (parent[v1] > parent[v2])
             swap(ref v1, ref v2);
+        GroupCount--;
         parent[v1] += parent[v2];
         parent[v2] = v1;
         return true;
