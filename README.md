@@ -59,7 +59,7 @@ verifyはされていないので注意してください
   
 - Todo
   - コメント
-  - 平衡二分木(Treap,RBT)
+  - 平衡二分木(Treap,RBT,Splay木)
   - フロー系
   - フィボナッチヒープ
   - 謎木
@@ -67,3 +67,5 @@ verifyはされていないので注意してください
   - SparseTable
   - UndoableUnionFind(Undo可能なUnionFind)
   - 部分永続UnionFind
+  - BinaryTrie
+  - WaveletMatrix
