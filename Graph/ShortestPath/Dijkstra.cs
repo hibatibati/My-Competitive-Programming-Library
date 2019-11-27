@@ -19,15 +19,15 @@ class Dijkstra
     {
         var dist = Create(num, () => Number.MaxValue);
         var pq = new PriorityQueue<Edge>();
-        pq.Enqueue(new Edge(st, 0));
+        pq.Push(new Edge(st, 0));
         dist[st] = 0;
         while (pq.Any())
         {
-            var p = pq.Dequeue();
+            var p = pq.Pop();
             if (p.cost > dist[p.to]) continue;
             foreach (var e in edges[p.to])
                 if (chmin(ref dist[e.to], e.cost + p.cost))
-                    pq.Enqueue(new Edge(e.to, dist[e.to]));
+                    pq.Push(new Edge(e.to, dist[e.to]));
         }
         return dist;
     }

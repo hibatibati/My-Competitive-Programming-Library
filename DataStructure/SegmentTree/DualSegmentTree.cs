@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Runtime.CompilerServices;
 
-public class SegmentTree<T>
+public class DualSegmentTree<T>
 {
     protected readonly T[] item;
     protected readonly int size;
     protected readonly Func<T, T, T> merge;
-    protected readonly Func<T, T, T> update;
     protected readonly T idT;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -26,48 +26,40 @@ public class SegmentTree<T>
         set { item[i + size - 1] = value; }
     }
 
-    public SegmentTree(int N, T idT, Func<T, T, T> merge, Func<T, T, T> update = null)
+    public DualSegmentTree(int N, T idT, Func<T, T, T> merge)
     {
         this.merge = merge;
         this.size = 1;
         this.idT = idT;
-        this.update = update ?? ((T val1, T val2) => val2);
         while (size < N)
             size <<= 1;
         item = new T[2 * this.size - 1];
         for (var i = 0; i < 2 * size - 1; i++)
             item[i] = idT;
     }
-
-    public void Update(int index, T value)
+    public void Update(int left, int right, T value, int k = 0, int l = 0, int r = -1)
+    {
+        if (r == -1) r = size;
+        if (r <= left || right <= l) return;
+        if (left <= l && r <= right) item[k] = merge(item[k], value);
+        else
+        {
+            Update(left, right, value, Left(k), l, (l + r) >> 1);
+            Update(left, right, value, Right(k), (l + r) >> 1, r);
+        }
+    }
+    public T Query(int index)
     {
         index += size - 1;
-        item[index] = update(item[index], value);
+        var value = merge(idT, item[index]);
         while (index > 0)
         {
             index = Parent(index);
-            item[index] = merge(item[Left(index)], item[Right(index)]);
+            value = merge(value, item[index]);
         }
+        return value;
     }
 
-    public void Build()
-    {
-        for (int i = size - 2; i >= 0; i--)
-            item[i] = merge(item[Left(i)], item[Right(i)]);
-    }
-
-    public virtual T Query(int left, int right, int k = 0, int l = 0, int r = -1)
-    {
-        if (r == -1) r = size;
-        if (r <= left || right <= l) return idT;
-        if (left <= l && r <= right) return item[k];
-        else
-            return merge(Query(left, right, Left(k), l, (l + r) >> 1), Query(left, right, Right(k), (l + r) >> 1, r));
-    }
-
-    /// <summary>
-    /// check(func(item[st]...item[i]))がtrueとなる最小のi
-    /// </summary>
     public int Find(int st, Func<T, bool> check)
     {
         var x = idT;

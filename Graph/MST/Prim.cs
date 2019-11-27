@@ -20,17 +20,17 @@ class Prim
     {
         Number res = 0;
         var pq = new PriorityQueue<Edge>();
-        pq.Enqueue(new Edge(st, 0));
+        pq.Push(new Edge(st, 0));
         var use = new bool[num];
         while (pq.Any())
         {
-            var p = pq.Dequeue();
+            var p = pq.Pop();
             if (use[p.to]) continue;
             use[p.to] = true;
             res += p.cost;
             foreach (var e in edges[p.to])
                 if (!use[e.to])
-                    pq.Enqueue(e);
+                    pq.Push(e);
         }
         return res;
     }

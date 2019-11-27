@@ -5,7 +5,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 
 /// <summary>
-/// Enqueue/Dequeue:O(logN)
+/// Push/Pop:O(logN)
 /// Peek:O(1)
 /// </summary>
 /// <typeparam name="T"></typeparam>
@@ -15,11 +15,9 @@ public class PriorityQueue<T>
     private Comparison<T> cmp;
     public int Count { get { return item.Count; } }
     public T Peek { get { return item[0]; } }
-    public PriorityQueue() { cmp = Comparer<T>.Default.Compare; }
+    public PriorityQueue() { cmp = cmp ?? Comparer<T>.Default.Compare; }
 
     public PriorityQueue(Comparison<T> comparison) { cmp = comparison; }
-
-    public PriorityQueue(IComparer<T> comparer) { cmp = comparer.Compare; }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private int Parent(int i)
@@ -27,7 +25,7 @@ public class PriorityQueue<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private int Left(int i)
         => (i << 1) + 1;
-    public T Enqueue(T val)
+    public T Push(T val)
     {
         int i = item.Count;
         item.Add(val);
@@ -42,7 +40,7 @@ public class PriorityQueue<T>
         item[i] = val;
         return val;
     }
-    public T Dequeue()
+    public T Pop()
     {
         var ret = item[0];
         var p = 0;
