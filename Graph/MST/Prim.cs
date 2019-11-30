@@ -14,11 +14,11 @@ class Prim
     public Prim(int num)
     { this.num = num; edges = Create(num, () => new List<Edge>()); }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void AddEdge(int from, int to, Number weight)
+    public void AddEdge(int from, int to, long weight)
         => edges[from].Add(new Edge(to, weight));
-    public Number Execute(int st = 0)
+    public long Execute(int st = 0)
     {
-        Number res = 0;
+        long res = 0;
         var pq = new PriorityQueue<Edge>();
         pq.Push(new Edge(st, 0));
         var use = new bool[num];
@@ -37,8 +37,8 @@ class Prim
     private struct Edge : IComparable<Edge>
     {
         public int to;
-        public Number cost;
-        public Edge(int to, Number cost)
+        public long cost;
+        public Edge(int to, long cost)
         { this.to = to; this.cost = cost; }
         public int CompareTo(Edge e)
             => cost.CompareTo(e.cost);

@@ -13,11 +13,11 @@ class Dijkstra
     private List<Edge>[] edges;
     public Dijkstra(int num)
     { this.num = num; edges = Create(num, () => new List<Edge>()); }
-    public void AddEdge(int from, int to, Number weight)
+    public void AddEdge(int from, int to, long weight)
         => edges[from].Add(new Edge(to, weight));
-    public Number[] Execute(int st = 0)
+    public long[] Execute(int st = 0)
     {
-        var dist = Create(num, () => Number.MaxValue);
+        var dist = Create(num, () => long.MaxValue);
         var pq = new PriorityQueue<Edge>();
         pq.Push(new Edge(st, 0));
         dist[st] = 0;
@@ -35,8 +35,8 @@ class Dijkstra
     struct Edge : IComparable<Edge>
     {
         public int to;
-        public Number cost;
-        public Edge(int to, Number cost)
+        public long cost;
+        public Edge(int to, long cost)
         { this.to = to; this.cost = cost; }
         public int CompareTo(Edge e)
             => cost.CompareTo(e.cost);

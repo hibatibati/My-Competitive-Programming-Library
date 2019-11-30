@@ -14,12 +14,12 @@ class Kruskal
     private List<Edge> edges;
     public Kruskal(int num)
     { this.num = num; edges = new List<Edge>(); }
-    public void AddEdge(int u, int v, Number weight)
+    public void AddEdge(int u, int v, long weight)
         => edges.Add(new Edge(u, v, weight));
-    public Number Execute()
+    public long Execute()
     {
         edges.Sort();
-        Number res = 0;
+        long res = 0;
         var uf = new UnionFind(num);
         foreach (var e in edges)
             if (uf.Union(e.from, e.to))
@@ -31,8 +31,8 @@ class Kruskal
     {
         public int from;
         public int to;
-        public Number cost;
-        public Edge(int from, int to, Number cost)
+        public long cost;
+        public Edge(int from, int to, long cost)
         {
             this.from = from; this.to = to; this.cost = cost;
         }

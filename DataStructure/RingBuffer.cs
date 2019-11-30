@@ -2,15 +2,16 @@
 
 public class RingBuffer<T>
 {
-    private T[] _item;
-    public int Count { get; private set; }
+    private T[] data;
+    public int Count { get; }
     public RingBuffer(int size)
     {
-        _item = new T[Count = size];
+        Count = size;
+        data = new T[size];
     }
     public T this[int index]
     {
-        get { index %= Count; if (index < 0) index += Count; return _item[index]; }
-        set { index %= Count; if (index < 0) index += Count; _item[index] = value; }
+        get { index %= Count; if (index < 0) index += Count; return data[index]; }
+        set { index %= Count; if (index < 0) index += Count; data[index] = value; }
     }
 }

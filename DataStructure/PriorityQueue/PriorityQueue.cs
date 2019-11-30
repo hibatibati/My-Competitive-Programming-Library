@@ -11,10 +11,10 @@ using System.Runtime.CompilerServices;
 /// <typeparam name="T"></typeparam>
 public class PriorityQueue<T>
 {
-    private List<T> item = new List<T>();
+    private List<T> data = new List<T>();
     private Comparison<T> cmp;
-    public int Count { get { return item.Count; } }
-    public T Peek { get { return item[0]; } }
+    public int Count { get { return data.Count; } }
+    public T Top { get { return data[0]; } }
     public PriorityQueue() { cmp = cmp ?? Comparer<T>.Default.Compare; }
 
     public PriorityQueue(Comparison<T> comparison) { cmp = comparison; }
@@ -27,37 +27,37 @@ public class PriorityQueue<T>
         => (i << 1) + 1;
     public T Push(T val)
     {
-        int i = item.Count;
-        item.Add(val);
+        int i = data.Count;
+        data.Add(val);
         while (i > 0)
         {
             int p = Parent(i);
-            if (cmp(item[p], val) <= 0)
+            if (cmp(data[p], val) <= 0)
                 break;
-            item[i] = item[p];
+            data[i] = data[p];
             i = p;
         }
-        item[i] = val;
+        data[i] = val;
         return val;
     }
     public T Pop()
     {
-        var ret = item[0];
+        var ret = data[0];
         var p = 0;
-        var x = item[item.Count - 1];
-        while (Left(p) < item.Count - 1)
+        var x = data[data.Count - 1];
+        while (Left(p) < data.Count - 1)
         {
             var l = Left(p);
-            if (l < item.Count - 2 && cmp(item[l + 1], item[l]) < 0) l++;
-            if (cmp(item[l], x) >= 0)
+            if (l < data.Count - 2 && cmp(data[l + 1], data[l]) < 0) l++;
+            if (cmp(data[l], x) >= 0)
                 break;
-            item[p] = item[l];
+            data[p] = data[l];
             p = l;
         }
-        item[p] = x;
-        item.RemoveAt(item.Count - 1);
+        data[p] = x;
+        data.RemoveAt(data.Count - 1);
         return ret;
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool Any() => item.Count > 0;
+    public bool Any() => data.Count > 0;
 }

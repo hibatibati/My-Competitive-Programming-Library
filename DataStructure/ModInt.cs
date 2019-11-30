@@ -4,31 +4,31 @@ public struct ModInt
 {
     public const long MOD = (int)1e9 + 7;
     //public const long MOD = 998244353;
-    public long num { get; set; }
-    public ModInt(long n = 0) { num = n; }
-    private static ModInt[] _fac;//階乗
-    private static ModInt[] _inv;//逆数
-    private static ModInt[] _facrev;//1/(i!)
+    public long value { get; set; }
+    public ModInt(long n = 0) { value = n; }
+    private static ModInt[] fac;//階乗
+    private static ModInt[] inv;//逆数
+    private static ModInt[] facinv;//1/(i!)
     public override string ToString()
-        => num.ToString();
+        => value.ToString();
     public static ModInt operator +(ModInt l, ModInt r)
     {
-        l.num += r.num;
-        if (l.num >= MOD) l.num -= MOD;
+        l.value += r.value;
+        if (l.value >= MOD) l.value -= MOD;
         return l;
     }
     public static ModInt operator -(ModInt l, ModInt r)
     {
-        l.num -= r.num;
-        if (l.num < 0) l.num += MOD;
+        l.value -= r.value;
+        if (l.value < 0) l.value += MOD;
         return l;
     }
     public static ModInt operator *(ModInt l, ModInt r)
-        => new ModInt(l.num * r.num % MOD);
+        => new ModInt(l.value * r.value % MOD);
     public static ModInt operator /(ModInt l, ModInt r)
         => l * Pow(r, MOD - 2);
     public static implicit operator long(ModInt l)
-        => l.num;
+        => l.value;
     public static implicit operator ModInt(long n)
     {
         n %= MOD; if (n < 0) n += MOD;
@@ -42,35 +42,35 @@ public struct ModInt
         else return Pow(m * m, n >> 1) * m;
     }
 
-    public static void CombBuild(int n)
+    public static void Build(int n)
     {
-        _fac = new ModInt[n + 1];
-        _facrev = new ModInt[n + 1];
-        _inv = new ModInt[n + 1];
-        _inv[1] = 1;
-        _fac[0] = _fac[1] = 1;
-        _facrev[0] = _facrev[1] = 1;
+        fac = new ModInt[n + 1];
+        facinv = new ModInt[n + 1];
+        inv = new ModInt[n + 1];
+        inv[1] = 1;
+        fac[0] = fac[1] = 1;
+        facinv[0] = facinv[1] = 1;
         for (var i = 2; i <= n; i++)
         {
-            _fac[i] = _fac[i - 1] * i;
-            _inv[i] = MOD - _inv[MOD % i] * (MOD / i);
-            _facrev[i] = _facrev[i - 1] * _inv[i];
+            fac[i] = fac[i - 1] * i;
+            inv[i] = MOD - inv[MOD % i] * (MOD / i);
+            facinv[i] = facinv[i - 1] * inv[i];
         }
     }
 
     public static ModInt Fac(ModInt n)
-        => _fac[n];
-    public static ModInt Div(ModInt n)
-        => _inv[n];
-    public static ModInt FacRev(ModInt n)
-        => _facrev[n];
+        => fac[n];
+    public static ModInt Inv(ModInt n)
+        => inv[n];
+    public static ModInt FacInv(ModInt n)
+        => facinv[n];
     public static ModInt Comb(ModInt n, ModInt r)
     {
         if (n < r) return 0;
         if (n == r) return 1;
-        var calc = _fac[n];
-        calc = calc * _facrev[r];
-        calc = calc * _facrev[n - r];
+        var calc = fac[n];
+        calc = calc * facinv[r];
+        calc = calc * facinv[n - r];
         return calc;
     }
 }

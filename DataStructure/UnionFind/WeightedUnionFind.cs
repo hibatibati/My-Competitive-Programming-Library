@@ -1,52 +1,41 @@
 ﻿using System;
 
-public class WeightedUnionFind
+class WeightedUnionFind
 {
-    private int _num;
-    private int[] _parent, _size, _rank;
-    private long[] _dif;
-    public WeightedUnionFind(int num)
+    public int GroupCount { get; private set; }
+    protected int[] data;
+    private long[] dif;
+    public virtual int this[int i] { get { return Find(i); } }
+    public WeightedUnionFind(int size)
     {
-        _num = num;
-        _parent = new int[num]; _size = new int[num]; _rank = new int[num]; _dif = new long[num];
-        for (var i = 0; i < num; i++) { _parent[i] = i; _size[i] = 1; }
+        data = new int[size]; dif = new long[size];
+        GroupCount = size;
+        for (var i = 0; i < size; i++)
+            data[i] = -1;
     }
-    private int Find(int i)
+    protected int Find(int i)
     {
-        if (_parent[i] == i) return i;
-        var r = Find(_parent[i]);
-        _dif[i] += _dif[_parent[i]];
-        return _parent[i] = r;
+        if (data[i] < 0) return i;
+        var root = Find(data[i]);
+        dif[i] += dif[data[i]];
+        return data[i] = root;
     }
-    private long Weight(int i) { Find(i); return _dif[i]; }
-    public long Dif(int v1, int v2)
-        => Weight(v2) - Weight(v1);
-    public int Parent(int i)
-        => Find(i);
+    private long Weight(int i) { Find(i); return dif[i]; }
+    public long Dif(int u, int v)
+        => Weight(v) - Weight(u);
     public int Size(int i)
-        => _size[Find(i)];
-    public bool Union(int v1, int v2, long weight)
+        => -data[Find(i)];
+    public virtual bool Union(int u, int v, long w)
     {
-        weight += Weight(v1); weight -= Weight(v2);
-        v1 = Find(v1); v2 = Find(v2);
-        if (v1 == v2) return false;
-        _num--;
-        if (_rank[v1] > _rank[v2])
-        {
-            _parent[v2] = v1;
-            _size[v1] += _size[v2];
-            _dif[v2] = weight;
-        }
-        else
-        {
-            _parent[v1] = v2;
-            _size[v2] += _size[v1];
-            _dif[v1] = -weight;
-            if (_rank[v1] == _rank[v2])
-                _rank[v2]++;
-        }
+        w += Weight(u); w -= Weight(v);
+        u = Find(u); v = Find(v);
+        if (u == v) return false;
+        if (data[u] > data[v])
+        { swap(ref u, ref v); w = -w; }
+        GroupCount--;
+        data[u] += data[v];
+        data[v] = u;
+        dif[v] = w;
         return true;
     }
-    public bool IsSame(int v1, int v2)
-        => Find(v1) == Find(v2);
 }

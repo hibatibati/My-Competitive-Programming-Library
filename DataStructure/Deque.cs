@@ -1,66 +1,49 @@
 ﻿using System;
 /// <summary>
 /// 計算量:Enqueue/Dequeue/ランダムアクセス:O(1)
-/// 依存:RingBuffer
 /// </summary>
 /// <typeparam name="T"></typeparam>
 public class Deque<T>
 {
-    private RingBuffer<T> _buf;
-    int _offset = 0, _size;
+    private T[] data;
+    int offset, sz;
     public int Count { get; private set; }
-    public Deque() { _buf = new RingBuffer<T>(_size = 16); }
-    public Deque(int size) { _buf = new RingBuffer<T>(_size = size); }
-    public T this[int index]
+    public Deque() { data = new T[sz = 16]; }
+    public T this[int i]
     {
-        get { return _buf[index + _offset]; }
-        set { _buf[index + _offset] = value; }
+        get { return data[(i + offset) & (sz - 1)]; }
+        set { data[(i + offset) & (sz - 1)] = value; }
     }
     private void Extend()
     {
-        var t = new RingBuffer<T>(_size << 1);
-        for (var i = 0; i < _size; i++)
-            t[i] = _buf[_offset + i];
-        _offset = 0;
-        _buf = t;
-        _size <<= 1;
+        var t = new T[sz << 1];
+        for (var i = 0; i < sz; i++)
+            t[i] = data[(offset + i) & (sz - 1)];
+        offset = 0;
+        data = t;
+        sz <<= 1;
     }
-    public void EnqueueHead(T item)
+    public void PushHead(T item)
     {
-        if (Count == _size) Extend();
-        _buf[--_offset] = item;
+        if (Count == sz) Extend();
+        data[--offset & (sz - 1)] = item;
         Count++;
     }
-    public T DequeueHead()
+    public T PopHead()
     {
         if (Count == 0) return default(T);
         Count--;
-        return _buf[_offset++];
+        return data[offset++ & (sz - 1)];
     }
-    public void EnqueueTail(T item)
+    public void PushTail(T item)
     {
-        if (Count == _size) Extend();
-        _buf[Count++ + _offset] = item;
+        if (Count == sz) Extend();
+        data[(Count++ + offset) & (sz - 1)] = item;
     }
-    public T DequeueTail()
+    public T PopTail()
     {
         if (Count == 0) return default(T);
-        return _buf[--Count + _offset];
+        return data[(--Count + offset) & (sz - 1)];
     }
-}
-
-class RingBuffer<T>
-{
-    private T[] _item;
-    private int _size;
-    public RingBuffer(int size)
-    {
-        _size = size;
-        _item = new T[size];
-    }
-    public T this[int index]
-    {
-        get { index %= _size; if (index < 0) index += _size; return _item[index]; }
-        set { index %= _size; if (index < 0) index += _size; _item[index] = value; }
-    }
+    public bool Any() => Count > 0;
 }
