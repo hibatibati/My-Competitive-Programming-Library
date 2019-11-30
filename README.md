@@ -10,7 +10,5 @@ verifyはされていないので注意してください
   - 謎木
   - HL分解
   - SparseTable
-  - UndoableUnionFind(Undo可能なUnionFind)
-  - 部分永続UnionFind
   - BinaryTrie
   - WaveletMatrix
