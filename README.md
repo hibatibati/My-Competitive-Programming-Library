@@ -12,3 +12,6 @@ verifyはされていないので注意してください
   - SparseTable
   - BinaryTrie
   - WaveletMatrix
+  - 永続配列
+  - 完全永続UnionFind
+  - FFT
