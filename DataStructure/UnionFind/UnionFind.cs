@@ -6,13 +6,11 @@ public class UnionFind
 {
     public int GroupCount { get; private set; }
     protected int[] data;
-    public virtual int this[int i] { get { return Find(i); } }
+    public virtual int this[int i] => Find(i);
     public UnionFind(int size)
     {
-        data = new int[size];
+        data = Create(size, () => -1);
         GroupCount = size;
-        for (var i = 0; i < size; i++)
-            data[i] = -1;
     }
     protected int Find(int i)
         => data[i] < 0 ? i : (data[i] = Find(data[i]));
