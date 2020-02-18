@@ -1,0 +1,2505 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns = "http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>AggregationQueue</Title>
+    <Author>
+    </Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>aggregationqueue</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[class AggregationQueue<T>
+{
+    private Stack<Node> front, back;
+    private Func<T, T, T> f;//半群
+    public AggregationQueue(Func<T, T, T> f)
+    {
+        this.f = f;
+        front = new Stack<Node>();
+        back = new Stack<Node>();
+    }
+    public int Count => front.Count + back.Count;
+    public bool Any() => front.Count > 0 || back.Count > 0;
+    public T All_Fold()
+    {
+        if (!front.Any())
+            return back.Peek().sum;
+        if (!back.Any())
+            return front.Peek().sum;
+        return f(front.Peek().sum, back.Peek().sum);
+    }
+    public void Push(T v)
+    {
+        if (back.Any())
+            back.Push(new Node(v, f(back.Peek().sum, v)));
+        else back.Push(new Node(v, v));
+    }
+    public void Pop()
+    {
+        if (!front.Any())
+        {
+            front.Push(new Node(back.Peek().val, back.Pop().val));
+            while (back.Any())
+            {
+                var s = f(back.Peek().val, front.Peek().sum);
+                front.Push(new Node(back.Pop().val, s));
+            }
+        }
+        front.Pop();
+    }
+    private struct Node
+    {
+        public T val, sum;
+        public Node(T v,T s) { val = v;sum = s; }
+    }
+}]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>BinaryIndexedTree</Title>
+    <Author>ひばち</Author>
+    <Description>BIT</Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>binaryindexedtree</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[public class BIT
+{
+    //1-indexed
+    long[] data;
+    public BIT(int num)
+    {
+        data = new long[num + 1];
+    }
+    public long this[int index]
+    {
+        get { var s = 0L; for (var i = index; i > 0; i -= i & -i) s += data[i]; return s; }
+    }
+    public void add(int index, long value)
+    {
+        for (var i = index; i < data.Length; i += i & -i) data[i] += value;
+    }
+}]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>BinarySearch</Title>
+    <Author>
+    </Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>bsearch</Shortcut>
+  </Header>
+  <Snippet>
+    <Declarations>
+      <Literal Editable="true">
+        <ID>right</ID>
+        <ToolTip>1000000007</ToolTip>
+        <Default>1000000007</Default>
+        <Function>
+        </Function>
+      </Literal>
+      <Literal Editable="true">
+        <ID>left</ID>
+        <ToolTip>0</ToolTip>
+        <Default>0</Default>
+        <Function>
+        </Function>
+      </Literal>
+    </Declarations>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[var r = $right$; var l = $left$;
+        while (r - l > 1)
+        {
+            var m = (r + l) / 2;
+            bool ok;
+            //判定
+            $end$
+            if (ok) r = m;
+            else l = m;
+        }
+        ]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>BipartiteGraph</Title>
+    <Author>ひばち</Author>
+    <Description>二部グラフ判定</Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>bipartitegraph</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[public class BipartiteGraph : UnionFind
+{
+    int num;
+    public override int this[int i] { get { return Find(0)==Find(i)?1:0; } }
+    public BipartiteGraph(int num) : base(num << 1)
+    { this.num = num; }
+    public bool Coloring()
+    {
+        for (var i = 0; i < num; i++)
+            if (Find(i) == Find(i + num)) return false;
+        return true;
+    }
+    public override bool Union(int v1, int v2)
+        => base.Union(v1, v2 + num) && base.Union(v1 + num, v2);
+}]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>BIT2D</Title>
+    <Author>
+    </Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>bit2D</Shortcut>
+  </Header>
+  <Snippet>
+    <Declarations>
+      <Literal Editable="true">
+        <ID>T</ID>
+        <ToolTip>T</ToolTip>
+        <Default>T</Default>
+        <Function>
+        </Function>
+      </Literal>
+    </Declarations>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[class BIT2D
+{
+    int H, W;
+    $T$[] item;
+    public $T$ this[int i, int j]
+    {
+        get { return RangeSum(i, j, i, j); }
+        set { Add(i, j, value - this[i, j]); }
+    }
+    public BIT2D(int h, int w)
+    { H = h; W = w; item = new $T$[h * w]; }
+    public void Add(int h, int w, $T$ val)
+    { for (++h; h <= H; h += h & -h) AddX(h, w, val); }
+    public void AddRange(int h1, int w1, int h2, int w2, $T$ val)
+    {
+        Add(h1, w1, val);
+        if (h2 + 1 < H) Add(h2 + 1, w1, -val);
+        if (w2 + 1 < W) Add(h1, w2 + 1, -val);
+        if (h2 + 1 < H && w2 + 1 < W) Add(h2 + 1, w2 + 1, val);
+    }
+    public $T$ Sum(int h, int w)
+    {
+        $T$ r = 0;
+        for (++h; h > 0; h -= h & -h) r += SumX(h, w);
+        return r;
+    }
+    public $T$ RangeSum(int h1, int w1, int h2, int w2)
+        => Sum(h2, w2) - Sum(h1 - 1, w2) - Sum(h2, w1 - 1) + Sum(h1 - 1, w1 - 1);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private int id(int h, int w) => (h - 1) * W + w - 1;
+    private void AddX(int h, int w, $T$ val)
+    { for (++w; w <= W; w += w & -w) item[id(h, w)] += val; }
+    private $T$ SumX(int h, int w)
+    {
+        $T$ r = 0;
+        for (++w; w > 0; w -= w & -w) r += item[id(h, w)];
+        return r;
+    }
+}]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>Compression</Title>
+    <Author>ひばち</Author>
+    <Description>座圧</Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>compression</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[public static Dictionary<T, int> Compression<T>(T[] ar, int d = 0, Comparison<T> cmp = null)
+    {
+        cmp = cmp ?? Comparer<T>.Default.Compare;
+        var dic = new Dictionary<T, int>();
+        var cp = new T[ar.Length];
+        Array.Copy(ar, cp, ar.Length);
+        Array.Sort(cp, (a, b) => cmp(a, b));
+        for (var i = 0; i < cp.Length; i++)
+            if (!dic.ContainsKey(cp[i]))
+                dic[cp[i]] = d++;
+        return dic;
+    }]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>Deque</Title>
+    <Author>ひばち</Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>deque</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[public class Deque<T>
+{
+    private T[] data;
+    int offset, sz;
+    public int Count { get; private set; }
+    public Deque() { data = new T[sz = 16]; }
+    public T this[int i]
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get { return data[(i + offset) & (sz - 1)]; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        set { data[MOD(i + offset)] = value; }
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public int MOD(int v) => v & (sz - 1);
+    private void Extend()
+    {
+        var t = new T[sz << 1];
+        for (var i = 0; i < sz; i++)
+            t[i] = data[MOD(offset + i)];
+        offset = 0;
+        data = t;
+        sz <<= 1;
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void PushHead(T item)
+    {
+        if (Count == sz) Extend();
+        data[MOD(--offset)] = item;
+        Count++;
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public T PopHead()
+    {
+        if (Count == 0) return default(T);
+        Count--;
+        return data[MOD(offset++)];
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void PushTail(T item)
+    {
+        if (Count == sz) Extend();
+        data[MOD(Count++ + offset)] = item;
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public T PopTail()
+    {
+        if (Count == 0) return default(T);
+        return data[MOD(--Count + offset)];
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool Any() => Count > 0;
+}]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>Dijkstra</Title>
+    <Author>
+    </Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>dijkstra</Shortcut>
+  </Header>
+  <Snippet>
+    <Imports>
+    </Imports>
+    <Declarations>
+      <Literal Editable="true">
+        <ID>T</ID>
+        <ToolTip>T</ToolTip>
+        <Default>T</Default>
+        <Function>
+        </Function>
+      </Literal>
+    </Declarations>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[List<Edge>[] edges;
+    public $T$[] Dijkstra(int st = 0)
+    {
+        var dist = Create(edges.Length, () => $T$.MaxValue);
+        var pq = new PriorityQueue<Edge>((a, b) => a.cost.CompareTo(b.cost));
+        pq.Push(new Edge(st, 0));
+        dist[st] = 0;
+        while (pq.Any())
+        {
+            var p = pq.Pop();
+            if (p.cost > dist[p.to]) continue;
+            foreach (var e in edges[p.to])
+                if (chmin(ref dist[e.to], e.cost + p.cost))
+                {
+                    pq.Push(new Edge(e.to, dist[e.to]));
+                }
+        }
+        return dist;
+    }
+    struct Edge
+    {
+        public int to; public $T$ cost;
+        public Edge(int t, $T$ c)
+        { to = t; cost = c; }
+    }]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>Dijkstra_Class</Title>
+    <Author>ひばち</Author>
+    <Description>ダイクストラclass ver</Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>dijkstra_class</Shortcut>
+  </Header>
+  <Snippet>
+    <Imports>
+    </Imports>
+    <Declarations>
+      <Literal Editable="true">
+        <ID>T</ID>
+        <ToolTip>T</ToolTip>
+        <Default>T</Default>
+        <Function>
+        </Function>
+      </Literal>
+    </Declarations>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[class Dijkstra
+{
+    private int size;
+    private List<Edge>[] edges;
+    public Dijkstra(int size)
+    { this.size = size; edges = Create(size, () => new List<Edge>()); }
+    public void AddEdge(int from, int to, $T$ weight)
+        => edges[from].Add(new Edge(to, weight));
+    public $T$[] Execute(int st = 0)
+    {
+        var dist = Create(size, () => $T$.MaxValue);
+        var pq = new PriorityQueue<Edge>();
+        pq.Push(new Edge(st, 0));
+        dist[st] = 0;
+        while (pq.Any())
+        {
+            var p = pq.Pop();
+            if (p.cost > dist[p.to]) continue;
+            foreach (var e in edges[p.to])
+                if (chmin(ref dist[e.to], e.cost + p.cost))
+                    pq.Push(new Edge(e.to, dist[e.to]));
+        }
+        return dist;
+    }
+
+    struct Edge : IComparable<Edge>
+    {
+        public int to;
+        public $T$ cost;
+        public Edge(int to, $T$ cost)
+        { this.to = to; this.cost = cost; }
+        public int CompareTo(Edge e)
+            => cost.CompareTo(e.cost);
+    }
+}]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>DualSegmentTree</Title>
+    <Author>
+    </Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>dualsegmenttree</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[public class DualSegmentTree<T>
+{
+    protected readonly T[] data;
+    protected readonly int size;
+    protected readonly Func<T, T, T> merge;
+    protected readonly T idT;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected int Parent(int i)
+        => (i - 1) >> 1;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected int Left(int i)
+        => (i << 1) + 1;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected int Right(int i)
+        => (i + 1) << 1;
+    public T this[int i]
+    {
+        get { return data[i + size - 1]; }
+        set { data[i + size - 1] = value; }
+    }
+
+    public DualSegmentTree(int N, T idT, Func<T, T, T> merge)
+    {
+        this.merge = merge;
+        this.size = 1;
+        this.idT = idT;
+        while (size < N)
+            size <<= 1;
+        data = new T[2 * this.size - 1];
+        for (var i = 0; i < 2 * size - 1; i++)
+            data[i] = idT;
+    }
+    public void Update(int left, int right, T value, int k = 0, int l = 0, int r = -1)
+    {
+        if (r == -1) r = size;
+        if (r <= left || right <= l) return;
+        if (left <= l && r <= right) data[k] = merge(data[k], value);
+        else
+        {
+            Update(left, right, value, Left(k), l, (l + r) >> 1);
+            Update(left, right, value, Right(k), (l + r) >> 1, r);
+        }
+    }
+    public T Query(int i)
+    {
+        i += size - 1;
+        var value = merge(idT, data[i]);
+        while (i > 0)
+        {
+            i = Parent(i);
+            value = merge(value, data[i]);
+        }
+        return value;
+    }
+
+    public int Find(int st, Func<T, bool> check)
+    {
+        var x = idT;
+        return Find(st, check, ref x, 0, 0, size);
+    }
+    private int Find(int st, Func<T, bool> check, ref T x, int k, int l, int r)
+    {
+        if (l + 1 == r)
+        { x = merge(x, data[k]); return check(x) ? k - size + 1 : -1; }
+        var m = (l + r) >> 1;
+        if (m <= st) return Find(st, check, ref x, Right(k), m, r);
+        if (st <= l && !check(merge(x, data[k])))
+        { x = merge(x, data[k]); return -1; }
+        var xl = Find(st, check, ref x, Left(k), l, m);
+        if (xl >= 0) return xl;
+        return Find(st, check, ref x, Right(k), m, r);
+    }
+}]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>EulerTour</Title>
+    <Author>ひばち</Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>eulertour</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[int[] l, r;
+    public void EulerTour(List<int>[] edge, int root = 0)
+    {
+        var st = new Stack<int>();
+        st.Push(root);
+        var idx = 0;
+        l = Create(edge.Length, () => -1); r = new int[edge.Length];
+        while (st.Any())
+        {
+            var i = st.Pop();
+            if (l[i] != -1)
+            {
+                r[i] = idx++;
+                continue;
+            }
+            st.Push(i);
+            l[i] = idx++;
+            foreach (var e in edge[i])
+                if (l[e] == -1)
+                    st.Push(e);
+        }
+    }]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>GCDLCM</Title>
+    <Author>ひばち</Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>gcdlcm</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[#region GCD
+    public static int LCM(int num1, int num2)
+        => num1 / GCD(num1, num2) * num2;
+
+    public static long LCM(long num1, long num2)
+        => num1 / GCD(num1, num2) * num2;
+
+    public static int GCD(int num1, int num2)
+        => num1 < num2 ? GCD(num2, num1) :
+           num2 > 0 ? GCD(num2, num1 % num2) : num1;
+
+    public static long GCD(long num1, long num2)
+        => num1 < num2 ? GCD(num2, num1) :
+           num2 > 0 ? GCD(num2, num1 % num2) : num1;
+    #endregion]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>Grid_BFS</Title>
+    <Author>ひばち</Author>
+    <Description>Grid上のbfs</Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>grid_bfs</Shortcut>
+  </Header>
+  <Snippet>
+    <Declarations>
+      <Literal Editable="true">
+        <ID>H</ID>
+        <ToolTip>H</ToolTip>
+        <Default>H</Default>
+        <Function>
+        </Function>
+      </Literal>
+      <Literal Editable="true">
+        <ID>W</ID>
+        <ToolTip>W</ToolTip>
+        <Default>W</Default>
+        <Function>
+        </Function>
+      </Literal>
+    </Declarations>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[var dist = Create($H$, () => Create($W$, () => -1));
+        var que = new Queue<Pi>();
+        //始点
+        
+        while (que.Any())
+        {
+            var p = que.Dequeue();
+            for (var i = 0; i < gh.Length; i++)
+            {
+                int nh = p.v1 + gh[i], nw = gw[i] + p.v2;
+                if (!Inside(nh, nw, $H$, $W$) || dist[nh][nw] != -1) continue;
+                
+                dist[nh][nw] = dist[p.v1][p.v2] + 1;
+                que.Enqueue(new Pi(nh, nw));
+            }
+        }]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>InputGraph</Title>
+    <Author>
+    </Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>inputgraph</Shortcut>
+  </Header>
+  <Snippet>
+    <Declarations>
+      <Literal Editable="true">
+        <ID>N</ID>
+        <ToolTip>N</ToolTip>
+        <Default>N</Default>
+        <Function>
+        </Function>
+      </Literal>
+      <Literal Editable="true">
+        <ID>M</ID>
+        <ToolTip>M</ToolTip>
+        <Default>M</Default>
+        <Function>
+        </Function>
+      </Literal>
+    </Declarations>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[var edge = Create($N$, () => new List<int>());
+        for(var i = 0; i < $M$; i++)
+        {
+            int a, b;
+            sc.Make(out a, out b);
+            a--;b--;
+            edge[a].Add(b);
+            edge[b].Add(a);
+        }]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>InputSpWeightedGraph</Title>
+    <Author>
+    </Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>inputspweightedgraph</Shortcut>
+  </Header>
+  <Snippet>
+    <Declarations>
+      <Literal Editable="true">
+        <ID>M</ID>
+        <ToolTip>M</ToolTip>
+        <Default>M</Default>
+        <Function>
+        </Function>
+      </Literal>
+    </Declarations>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[for(var i = 0; i < $M$; i++)
+        {
+            int a, b, c;
+            sc.Make(out a, out b, out c);
+            a--;b--;
+            d.AddEdge(a, b, c);
+            d.AddEdge(b, a, c);
+        }]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>InputWeightedGraph</Title>
+    <Author>
+    </Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>inputweightedgraph</Shortcut>
+  </Header>
+  <Snippet>
+    <Declarations>
+      <Literal Editable="true">
+        <ID>M</ID>
+        <ToolTip>M</ToolTip>
+        <Default>M</Default>
+        <Function>
+        </Function>
+      </Literal>
+      <Literal Editable="true">
+        <ID>N</ID>
+        <ToolTip>N</ToolTip>
+        <Default>N</Default>
+        <Function>
+        </Function>
+      </Literal>
+    </Declarations>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[var edge = Create($N$, () => new List<Pair<int, long>>());
+        for(var i = 0; i < $M$; i++)
+        {
+            int a, b, c;
+            sc.Make(out a, out b, out c);
+            a--;b--;
+            edge[a].Add(new Pair<int, long>(b, c));
+            edge[b].Add(new Pair<int, long>(a, c));
+        }]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>Inside</Title>
+    <Author>ひばち</Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>inside</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[int[] gh = new[] { 0, 0, 1, -1 }, gw = new[] { 1, -1, 0, 0 };
+    public static bool Inside(int h, int w, int hh, int ww)
+        => 0 <= h && h < hh && 0 <= w && w < ww;]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>Kruskal</Title>
+    <Author>ひばち</Author>
+    <Description>クラスカル法</Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>kruskal_class</Shortcut>
+  </Header>
+  <Snippet>
+    <Imports>
+    </Imports>
+    <Declarations>
+      <Literal Editable="true">
+        <ID>T</ID>
+        <ToolTip>T</ToolTip>
+        <Default>T</Default>
+        <Function>
+        </Function>
+      </Literal>
+    </Declarations>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[class Kruskal
+{
+    private int num;
+    private List<Edge> edges;
+    public Kruskal(int num)
+    { this.num = num; edges = new List<Edge>(); }
+    public void AddEdge(int u, int v, $T$ weight)
+        => edges.Add(new Edge(u, v, weight));
+    public $T$ Execute()
+    {
+        edges.Sort();
+        $T$ res = 0;
+        var uf = new UnionFind(num);
+        foreach (var e in edges)
+            if (uf.Union(e.from, e.to))
+                res += e.cost;
+        return res;
+    }
+
+    struct Edge : IComparable<Edge>
+    {
+        public int from;
+        public int to;
+        public $T$ cost;
+        public Edge(int from, int to, $T$ cost)
+        {
+            this.from = from; this.to = to; this.cost = cost;
+        }
+        public int CompareTo(Edge e)
+            => cost.CompareTo(e.cost);
+    }
+}]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>LazySegmentTree</Title>
+    <Author>ひばち</Author>
+    <Description>遅延セグメント木</Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>lazysegmenttree</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[public class LazySegmentTree<T, E>
+where E : IComparable<E>
+{
+    protected readonly int size;
+    protected readonly T idT;
+    protected readonly T[] data;
+    protected readonly E idE;
+    protected readonly E[] lazy;
+    protected readonly Func<T, T, T> mergeT;
+    protected readonly Func<T, E, T> update;
+    protected readonly Func<E, E, E> mergeE;
+    protected readonly Func<E, int, E> sec;
+
+    public T this[int i]
+    {
+        get { return data[i + size - 1]; }
+        set { data[i + size - 1] = value; }
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected int Parent(int index)
+        => (index - 1) >> 1;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected int Left(int index)
+        => (index << 1) + 1;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected int Right(int index)
+        => (index + 1) << 1;
+    public LazySegmentTree(int N, T idT, E idE, Func<T, T, T> mergeT, Func<T, E, T> update = null, Func<E, E, E> mergeE = null, Func<E, int, E> sec = null)
+    {
+        this.mergeT = mergeT;
+        this.size = 1;
+        this.idT = idT;
+        this.idE = idE;
+        this.update = update ?? ((a, b) => a);
+        this.mergeE = mergeE ?? ((a, b) => b);
+        this.sec = sec ?? ((a, b) => a);
+
+        while (this.size < N)
+            this.size <<= 1;
+        data = new T[2 * this.size - 1];
+        for (var i = 0; i < 2 * this.size - 1; i++)
+            data[i] = idT;
+        lazy = Enumerable.Repeat(0, 2 * this.size + 1).Select(_ => idE).ToArray();
+    }
+    protected void eval(int len, int k)
+    {
+        if (lazy[k].CompareTo(idE) == 0) return;
+        if (Right(k) < size * 2)
+        {
+            lazy[Left(k)] = mergeE(lazy[Left(k)], lazy[k]);
+            lazy[Right(k)] = mergeE(lazy[Right(k)], lazy[k]);
+        }
+        data[k] = update(data[k], sec(lazy[k], len));
+        lazy[k] = idE;
+    }
+    public void Build()
+    {
+        for (int i = size - 2; i >= 0; i--)
+            data[i] = mergeT(data[Left(i)], data[Right(i)]);
+    }
+    public void Update(int left, int right, E value, int k = 0, int l = 0, int r = -1)
+    {
+        if (r == -1) r = size;
+        eval(r - l, k);
+        if (r <= left || right <= l) return;
+        if (left <= l && r <= right)
+        {
+            lazy[k] = mergeE(lazy[k], value);
+            eval(r - l, k);
+        }
+        else
+        {
+            Update(left, right, value, Left(k), l, (l + r) >> 1);
+            Update(left, right, value, Right(k), (l + r) >> 1, r);
+            data[k] = mergeT(data[Left(k)], data[Right(k)]);
+        }
+    }
+    public T Query(int left, int right, int k = 0, int l = 0, int r = -1)
+    {
+        if (r == -1) r = size;
+        if (r <= left || right <= l) return idT;
+        eval(r - l, k);
+        if (left <= l && r <= right) return data[k];
+        else
+            return mergeT(Query(left, right, Left(k), l, (l + r) >> 1), Query(left, right, Right(k), (l + r) >> 1, r));
+    }
+
+    public int Find(int st, Func<T, bool> check)
+    {
+        var x = idT;
+        return Find(st, check, ref x, 0, 0, size);
+    }
+    private int Find(int st, Func<T, bool> check, ref T x, int k, int l, int r)
+    {
+        if (l + 1 == r)
+        { x = mergeT(x, data[k]); return check(x) ? k - size + 1 : -1; }
+        eval(r - l, k);
+        var m = (l + r) >> 1;
+        if (m <= st) return Find(st, check, ref x, Right(k), m, r);
+        if (st <= l && !check(mergeT(x, data[k])))
+        { x = mergeT(x, data[k]); return -1; }
+        var xl = Find(st, check, ref x, Left(k), l, m);
+        if (xl >= 0) return xl;
+        return Find(st, check, ref x, Right(k), m, r);
+    }
+}
+]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>LowestCommonAncestor</Title>
+    <Author>ひばち</Author>
+    <Description>最小共通祖先</Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>lowestcommonancester</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[ class LowestCommonAncestor
+    {
+        private List<int>[] edge;
+        private int num, lb;
+        private int[][] parent;
+        private int[] depth;
+        public LowestCommonAncestor(int num)
+        { this.num = num; edge = Create(num, () => new List<int>()); }
+        public void AddEdge(int u, int v)
+        {
+            edge[u].Add(v);edge[v].Add(u);
+        }
+        public void Build(int root = 0)
+        {
+            for (lb = 31; lb >= 0; lb--)
+                if ((1 & num >> lb) == 1)
+                    break;
+            parent = Create(lb + 1, () => Create(num, () => -1));
+            depth = new int[num];
+            PreDFS(root, -1);
+            for(var i=1;i<=lb;i++)
+                for(var j=0;j<num;j++)
+                    if(parent[i-1][j]!=-1)
+                    {
+                        parent[i][j] = parent[i - 1][parent[i - 1][j]];
+                    }
+        }
+        private void PreDFS(int index,int p)
+        {
+            parent[0][index] = p;
+            foreach (var e in edge[index])
+                if (e != p)
+                {
+                    depth[e] = depth[index] + 1;
+                    PreDFS(e, index);
+                }
+        }
+        public int LCA(int u, int v)
+        {
+            if (depth[u] > depth[v])
+                swap(ref u, ref v);
+            for (var i = lb; i >= 0; i--)
+                if ((1 & (depth[v] - depth[u]) >> i) == 1)
+                    v = parent[i][v];
+            if (u == v) return u;
+            for (var i = lb; i >= 0; i--)
+                if (parent[i][u] != parent[i][v])
+                { u = parent[i][u]; v = parent[i][v]; }
+            return parent[0][u];
+        }
+    }]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>Matrix</Title>
+    <Author>ひばち</Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>matrix</Shortcut>
+  </Header>
+  <Snippet>
+    <Imports>
+    </Imports>
+    <Declarations>
+      <Literal Editable="true">
+        <ID>T</ID>
+        <ToolTip>T</ToolTip>
+        <Default>T</Default>
+        <Function>
+        </Function>
+      </Literal>
+    </Declarations>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[public class Matrix
+{
+    private $T$[][] item { get; }
+    public int Height { get; }
+    public int Width { get; }
+    public static $T$ e { get; set; }
+    //add,mulは環をなす必要がある
+    public static Func<$T$, $T$, $T$> add { get; set; }
+    public static Func<$T$, $T$, $T$> mul { get; set; }
+    static Matrix()
+    {
+        const int mod = 1000000007; e = 1;
+        add = (a, b) => a + b >= mod ? a + b - mod : a + b; mul = (a, b) => (a * b) % mod;
+    }
+    public $T$[] this[int i]
+    { get { return item[i]; } set { item[i] = value; } }
+    public $T$ this[int i1, int i2]
+    {
+        get { return item[i1][i2]; }
+        set { item[i1][i2] = value; }
+    }
+    public Matrix(int size) : this(size, size) { }
+    public Matrix(int height, int width)
+    {
+        Height = height;
+        Width = width;
+        item = Enumerable.Repeat(0, height).Select(_ => new $T$[width]).ToArray();
+    }
+
+    private static Matrix E(int size)
+    {
+        var tm = new Matrix(size, size);
+        for (var i = 0; i < size; i++)
+            tm[i, i] = e;
+        return tm;
+    }
+
+    public static Matrix Trans(Matrix m)
+    {
+        var n = m.Width; var p = m.Height;
+        var tm = new Matrix(n, p);
+        for (var i = 0; i < n; i++)
+        {
+            for (var j = 0; j < p; j++)
+                tm[i, j] = m[j, i];
+        }
+        return tm;
+    }
+    private static $T$ Dot($T$[] ar1, $T$[] ar2)
+    {
+        var tm = default($T$);
+        for (var i = 0; i < ar1.Length; i++)
+            tm = add(tm, mul(ar1[i], ar2[i]));
+        return tm;
+    }
+    public static Matrix Add(Matrix m1, Matrix m2)
+    {
+        var tm = new Matrix(m1.Height, m1.Width);
+        for (var i = 0; i < m1.Height; i++)
+            for (var j = 0; j < m1.Width; j++)
+                tm[i, j] = add(m1[i, j], m2[i, j]);
+        return tm;
+    }
+    public static $T$[] Mul(Matrix m, $T$[] ar)
+        => Enumerable.Range(0, m.Height).Select(v => Dot(m[v], ar)).ToArray();
+
+    public static Matrix Mul(Matrix m1, Matrix m2)
+    {
+        var tr = Trans(m2);
+        var tm = new Matrix(m1.Height, m2.Width);
+        for (var i = 0; i < m1.Height; i++)
+            tm[i] = Mul(tr, m1[i]);
+        return tm;
+    }
+    public static Matrix operator +(Matrix l, Matrix r)
+        => Add(l, r);
+    public static Matrix operator *(Matrix l, Matrix r)
+        => Mul(l, r);
+    public static $T$[] operator *(Matrix l, $T$[] r)
+        => Mul(l, r);
+
+    public Matrix Pow(long n)
+    {
+        if (n == 0) return E(Height);
+        var tm = Pow(n / 2);
+        if (n % 2 == 0) return Mul(tm, tm);
+        else return Mul(Mul(tm, tm), this);
+    }
+}]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>MaxFlow</Title>
+    <Author>ひばち</Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>maxflow</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[public class MaxFlow
+{
+    readonly List<Edge>[] G;
+    readonly int[] lv, iter;
+
+    public MaxFlow(int V)
+    {
+        G = new List<Edge>[V];
+        lv = new int[V];
+        iter = new int[V];
+        for (int i = 0; i < G.Length; i++)
+            G[i] = new List<Edge>();
+    }
+
+    public void AddDirectedEdge(int from, int to, int cap)
+        => addEdge(from, to, cap, 0);
+
+    public void AddUndirectedEdge(int from, int to, int cap)
+        => addEdge(from, to, cap, cap);
+
+    void addEdge(int f, int t, int c1, int c2)
+    {
+        var a = new Edge(t, c1);
+        var b = new Edge(f, c2);
+        Edge.Link(a, b);
+        G[f].Add(a);
+        G[t].Add(b);
+    }
+
+    public int Execute(int src, int sink, int f = -1)
+    {
+        int flow = 0;
+        if (f < 0) f = int.MaxValue;
+        while (f > 0)
+        {
+            bfs(src);
+            if (lv[sink] == 0) return flow;
+            Array.Clear(iter, 0, iter.Length);
+            int df;
+            while ((df = dfs(src, sink, f)) > 0) { flow += df; f -= df; }
+        }
+        return flow;
+    }
+
+    void bfs(int s)
+    {
+        Array.Clear(lv, 0, lv.Length);
+        var q = new Queue<int>();
+        lv[s] = 1;
+        q.Enqueue(s);
+        while (q.Count > 0)
+        {
+            var v = q.Dequeue();
+            foreach (var e in G[v])
+                if (e.Cap > 0 && lv[e.To] == 0)
+                {
+                    lv[e.To] = lv[v] + 1;
+                    q.Enqueue(e.To);
+                }
+        }
+
+    }
+    int dfs(int v, int t, int f)
+    {
+        if (v == t) return f;
+        int ret = 0;
+        for (; iter[v] < G[v].Count; iter[v]++)
+        {
+            var e = G[v][iter[v]];
+            if (e.Cap <= 0 || lv[v] >= lv[e.To]) continue;
+            int df = dfs(e.To, t, Math.Min(f, e.Cap));
+            if (df <= 0) continue;
+            e.Cap -= df;
+            e.Rev.Cap += df;
+            ret += df; f -= df;
+            if (f == 0) break;
+        }
+        return ret;
+
+    }
+    class Edge
+    {
+        public static void Link(Edge e1, Edge e2)
+        {
+            e1.Rev = e2; e2.Rev = e1;
+        }
+        public int To { get; private set; }
+        public Edge Rev { get; private set; }
+        public int Cap { get; set; }
+        public Edge(int t, int c)
+        {
+            To = t;
+            Cap = c;
+        }
+        public override string ToString()
+        {
+            return string.Format("to: {0}, cap: {1}", To, Cap);
+        }
+    }
+}]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>ModInt</Title>
+    <Author>ひばち</Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>modint</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[public struct ModInt
+{
+    public const long MOD = (int)1e9 + 7;
+    //public const long MOD = 998244353;
+    public long Value { get; set; }
+    public ModInt(long n = 0) { Value = n; }
+    private static ModInt[] fac;//階乗
+    private static ModInt[] inv;//逆数
+    private static ModInt[] facinv;//1/(i!)
+    public override string ToString() => Value.ToString();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ModInt operator +(ModInt l, ModInt r)
+    {
+        l.Value += r.Value;
+        if (l.Value >= MOD) l.Value -= MOD;
+        return l;
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ModInt operator -(ModInt l, ModInt r)
+    {
+        l.Value -= r.Value;
+        if (l.Value < 0) l.Value += MOD;
+        return l;
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ModInt operator *(ModInt l, ModInt r) => new ModInt(l.Value * r.Value % MOD);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ModInt operator /(ModInt l, ModInt r) => l * Pow(r, MOD - 2);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator long(ModInt l) => l.Value;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator ModInt(long n)
+    {
+        n %= MOD; if (n < 0) n += MOD;
+        return new ModInt(n);
+    }
+
+    public static ModInt Pow(ModInt m, long n)
+    {
+        if (n == 0) return 1;
+        if (n % 2 == 0) return Pow(m * m, n >> 1);
+        else return Pow(m * m, n >> 1) * m;
+    }
+
+    public static void Build(int n)
+    {
+        fac = new ModInt[n + 1];
+        facinv = new ModInt[n + 1];
+        inv = new ModInt[n + 1];
+        inv[1] = 1;
+        fac[0] = fac[1] = 1;
+        facinv[0] = facinv[1] = 1;
+        for (var i = 2; i <= n; i++)
+        {
+            fac[i] = fac[i - 1] * i;
+            inv[i] = MOD - inv[MOD % i] * (MOD / i);
+            facinv[i] = facinv[i - 1] * inv[i];
+        }
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ModInt Fac(ModInt n) => fac[n];
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ModInt Inv(ModInt n) => inv[n];
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ModInt FacInv(ModInt n) => facinv[n];
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ModInt Comb(ModInt n, ModInt r)
+    {
+        if (n < r) return 0;
+        if (n == r) return 1;
+        var calc = fac[n];
+        calc = calc * facinv[r];
+        calc = calc * facinv[n - r];
+        return calc;
+    }
+}]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>OrderedSet</Title>
+    <Author>ひばち</Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>orderedset</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[public class Set<T>
+{
+    Node root;
+    readonly IComparer<T> comparer;
+    readonly Node nil;
+    public bool IsMultiSet { get; set; }
+    public Set(IComparer<T> comparer)
+    {
+        nil = new Node(default(T));
+        root = nil;
+        this.comparer = comparer;
+    }
+    public Set(Comparison<T> comaprison) : this(Comparer<T>.Create(comaprison)) { }
+    public Set() : this(Comparer<T>.Default) { }
+    public bool Add(T v)
+    {
+        return insert(ref root, v);
+    }
+    public bool Remove(T v)
+    {
+        return remove(ref root, v);
+    }
+    public T this[int index] { get { return find(root, index); } }
+    public int Count { get { return root.Count; } }
+    public void RemoveAt(int k)
+    {
+        if (k < 0 || k >= root.Count) throw new ArgumentOutOfRangeException();
+        removeAt(ref root, k);
+    }
+    public T[] Items
+    {
+        get
+        {
+            var ret = new T[root.Count];
+            var k = 0;
+            walk(root, ret, ref k);
+            return ret;
+        }
+    }
+    void walk(Node t, T[] a, ref int k)
+    {
+        if (t.Count == 0) return;
+        walk(t.lst, a, ref k);
+        a[k++] = t.Key;
+        walk(t.rst, a, ref k);
+    }
+
+    bool insert(ref Node t, T key)
+    {
+        if (t.Count == 0) { t = new Node(key); t.lst = t.rst = nil; t.Update(); return true; }
+        var cmp = comparer.Compare(t.Key, key);
+        bool res;
+        if (cmp > 0)
+            res = insert(ref t.lst, key);
+        else if (cmp == 0)
+        {
+            if (IsMultiSet) res = insert(ref t.lst, key);
+            else return false;
+        }
+        else res = insert(ref t.rst, key);
+        balance(ref t);
+        return res;
+    }
+    bool remove(ref Node t, T key)
+    {
+        if (t.Count == 0) return false;
+        var cmp = comparer.Compare(key, t.Key);
+        bool ret;
+        if (cmp < 0) ret = remove(ref t.lst, key);
+        else if (cmp > 0) ret = remove(ref t.rst, key);
+        else
+        {
+            ret = true;
+            var k = t.lst.Count;
+            if (k == 0) { t = t.rst; return true; }
+            if (t.rst.Count == 0) { t = t.lst; return true; }
+
+
+            t.Key = find(t.lst, k - 1);
+            removeAt(ref t.lst, k - 1);
+        }
+        balance(ref t);
+        return ret;
+    }
+    void removeAt(ref Node t, int k)
+    {
+        var cnt = t.lst.Count;
+        if (cnt < k) removeAt(ref t.rst, k - cnt - 1);
+        else if (cnt > k) removeAt(ref t.lst, k);
+        else
+        {
+            if (cnt == 0) { t = t.rst; return; }
+            if (t.rst.Count == 0) { t = t.lst; return; }
+
+            t.Key = find(t.lst, k - 1);
+            removeAt(ref t.lst, k - 1);
+        }
+        balance(ref t);
+    }
+    void balance(ref Node t)
+    {
+        var balance = t.lst.Height - t.rst.Height;
+        if (balance == -2)
+        {
+            if (t.rst.lst.Height - t.rst.rst.Height > 0) { rotR(ref t.rst); }
+            rotL(ref t);
+        }
+        else if (balance == 2)
+        {
+            if (t.lst.lst.Height - t.lst.rst.Height < 0) rotL(ref t.lst);
+            rotR(ref t);
+        }
+        else t.Update();
+    }
+
+    T find(Node t, int k)
+    {
+        if (k < 0 || k > root.Count) throw new ArgumentOutOfRangeException();
+        for (; ; )
+        {
+            if (k == t.lst.Count) return t.Key;
+            else if (k < t.lst.Count) t = t.lst;
+            else { k -= t.lst.Count + 1; t = t.rst; }
+        }
+    }
+    public int LowerBound(T v)
+    {
+        var k = 0;
+        var t = root;
+        for (; ; )
+        {
+            if (t.Count == 0) return k;
+            if (comparer.Compare(v, t.Key) <= 0) t = t.lst;
+            else { k += t.lst.Count + 1; t = t.rst; }
+        }
+    }
+    public int UpperBound(T v)
+    {
+        var k = 0;
+        var t = root;
+        for (; ; )
+        {
+            if (t.Count == 0) return k;
+            if (comparer.Compare(t.Key, v) <= 0) { k += t.lst.Count + 1; t = t.rst; }
+            else t = t.lst;
+        }
+    }
+
+    void rotR(ref Node t)
+    {
+        var l = t.lst;
+        t.lst = l.rst;
+        l.rst = t;
+        t.Update();
+        l.Update();
+        t = l;
+    }
+    void rotL(ref Node t)
+    {
+        var r = t.rst;
+        t.rst = r.lst;
+        r.lst = t;
+        t.Update();
+        r.Update();
+        t = r;
+    }
+
+
+    class Node
+    {
+        public Node(T key)
+        {
+            Key = key;
+        }
+        public int Count { get; private set; }
+        public sbyte Height { get; private set; }
+        public T Key { get; set; }
+        public Node lst, rst;
+        public void Update()
+        {
+            Count = 1 + lst.Count + rst.Count;
+            Height = (sbyte)(1 + Math.Max(lst.Height, rst.Height));
+        }
+        public override string ToString()
+        {
+            return string.Format("Count = {0}, Key = {1}", Count, Key);
+        }
+    }
+}]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>PrimeFactorization</Title>
+    <Author>ひばち</Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>factorize</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[public static Dictionary<long, int> Factorize(long num)
+    {
+        var dic = new Dictionary<long, int>();
+        for (var i = 2L; i * i <= num; i++)
+        {
+            var ct = 0;
+            while (num % i == 0)
+            {
+                ct++;
+                num /= i;
+            }
+            if (ct != 0) dic[i] = ct;
+        }
+        if (num != 1) dic[num] = 1;
+        return dic;
+    }]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>PrintAnserPerLine</Title>
+    <Author>ひばち</Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>prtline</Shortcut>
+  </Header>
+  <Snippet>
+    <Declarations>
+      <Literal Editable="true">
+        <ID>res</ID>
+        <ToolTip>res</ToolTip>
+        <Default>res</Default>
+        <Function>
+        </Function>
+      </Literal>
+    </Declarations>
+    <Code Language="csharp" Delimiter="$"><![CDATA[Console.WriteLine(string.Join("\n", $res$));]]></Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>PrintAnswerInLine</Title>
+    <Author>ひばち</Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>prtarray</Shortcut>
+  </Header>
+  <Snippet>
+    <Declarations>
+      <Literal Editable="true">
+        <ID>res</ID>
+        <ToolTip>res</ToolTip>
+        <Default>res</Default>
+        <Function>
+        </Function>
+      </Literal>
+    </Declarations>
+    <Code Language="csharp" Delimiter="$"><![CDATA[Console.WriteLine(string.Join(" ", $res$));]]></Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>PriorityQueue</Title>
+    <Author>ひばち</Author>
+    <Description>優先度付きキュー</Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>priorityqueue</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[public class PriorityQueue<T>
+{
+    private List<T> data = new List<T>();
+    private Comparison<T> cmp;
+    public int Count { get { return data.Count; } }
+    public T Top { get { return data[0]; } }
+    public PriorityQueue() { cmp = cmp ?? Comparer<T>.Default.Compare; }
+
+    public PriorityQueue(Comparison<T> comparison) { cmp = comparison; }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private int Parent(int i)
+        => (i - 1) >> 1;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private int Left(int i)
+        => (i << 1) + 1;
+    public T Push(T val)
+    {
+        int i = data.Count;
+        data.Add(val);
+        while (i > 0)
+        {
+            int p = Parent(i);
+            if (cmp(data[p], val) <= 0)
+                break;
+            data[i] = data[p];
+            i = p;
+        }
+        data[i] = val;
+        return val;
+    }
+    public T Pop()
+    {
+        var ret = data[0];
+        var p = 0;
+        var x = data[data.Count - 1];
+        while (Left(p) < data.Count - 1)
+        {
+            var l = Left(p);
+            if (l < data.Count - 2 && cmp(data[l + 1], data[l]) < 0) l++;
+            if (cmp(data[l], x) >= 0)
+                break;
+            data[p] = data[l];
+            p = l;
+        }
+        data[p] = x;
+        data.RemoveAt(data.Count - 1);
+        return ret;
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool Any() => data.Count > 0;
+}]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>RadixHeap</Title>
+    <Author>ひばち</Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>radixheap</Shortcut>
+  </Header>
+  <Snippet>
+    <Imports>
+      <Import>
+        <Namespace>tpRadixHeap=System.Int32</Namespace>
+      </Import>
+    </Imports>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[public class RadixHeap<T>
+{
+    public int Count { get; set; }
+    private tpRadixHeap last;
+    private List<Pair<tpRadixHeap, T>>[] v;
+    private int len;
+    public RadixHeap()
+    {
+        len = Convert.ToString(tpRadixHeap.MaxValue, 2).Length;
+        v = Enumerable.Repeat(0, len + 2).Select(_ => new List<Pair<tpRadixHeap, T>>()).ToArray();
+    }
+    private int GetBit(tpRadixHeap a)
+    {
+        for (var i = len; i >= 0; i--)
+            if ((1 & a >> i) == 1)
+                return i + 1;
+        return 0;
+    }
+    public void Push(Pair<tpRadixHeap, T> p)
+        => Push(p.v1, p.v2);
+    /// <summary>
+    /// last(=最後にpopしたもののkey)以上のkeyについて(key,value)をpushします
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="value"></param>
+    public void Push(tpRadixHeap key, T value)
+    {
+        Count++;
+        v[GetBit(key ^ last)].Add(new Pair<tpRadixHeap, T>(key, value));
+    }
+    public Pair<tpRadixHeap, T> Pop()
+    {
+        if (v[0].Count == 0)
+        {
+            var ind = 1;
+            while (v[ind].Count == 0) ind++;
+            var min = tpRadixHeap.MaxValue;
+            foreach (var p in v[ind])
+                chmin(ref min, p.v1);
+            last = min;
+            foreach (var p in v[ind])
+                v[GetBit(p.v1 ^ last)].Add(p);
+            v[ind].Clear();
+        }
+        Count--;
+        var ret = v[0].Last();
+        v[0].RemoveAt(v[0].Count - 1);
+        return ret;
+    }
+    public bool Any() => Count > 0;
+}]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>RingBuffer</Title>
+    <Author>ひばち</Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>ringbuffer</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[public class RingBuffer<T>
+{
+    private T[] data;
+    public int Count { get; }
+    public RingBuffer(int size)
+    {
+        Count = size;
+        data = new T[size];
+    }
+    public T this[int index]
+    {
+        get { index %= Count; if (index < 0) index += Count; return data[index]; }
+        set { index %= Count; if (index < 0) index += Count; data[index] = value; }
+    }
+}]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>RLEncoding</Title>
+    <Author>ひばち</Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>rlencoding</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[public static List<Pair<T, int>> RLEncoding<T>(IList<T> list, Comparison<T> cmp = null)
+    {
+        cmp = cmp ?? Comparer<T>.Default.Compare;
+        var ret = new List<Pair<T, int>> { new Pair<T, int>(list[0], 1) };
+        for (var i = 1; i < list.Count; i++)
+            if (cmp(ret.Last().v1, list[i]) == 0)
+                ret[ret.Count - 1].v2++;
+            else ret.Add(new Pair<T, int>(list[i], 1));
+        return ret;
+    }]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>RollingHash</Title>
+    <Author>
+    </Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>rollinghash</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[$end$
+public class RollingHash
+{
+    public string str { get; }
+    private ulong[] hashTable;
+    private static ulong[] pow;
+    private static uint Base { get; }
+    const ulong MASK30 = (1UL << 30) - 1;
+    const ulong MASK31 = (1UL << 31) - 1;
+    private const ulong MOD = (1UL << 61) - 1;
+    public RollingHash(string str)
+    {
+        this.str = str;
+        hashTable = new ulong[str.Length + 1];
+        for (var j = 1; j <= str.Length; j++)
+            hashTable[j] = CalcMod(Mul(hashTable[j - 1], Base) + str[j - 1]);
+    }
+    static RollingHash()
+    {
+        var rnd = new Random(); int min = 150, max = int.MaxValue;
+        Base = (uint)rnd.Next(min, max);
+        pow = new ulong[$maxLength$];
+        pow[0] = 1;
+        for (var j = 1; j < pow.Length; j++)
+            pow[j] = Mul(pow[j - 1], Base);
+    }
+
+    private static ulong Mul(ulong a, ulong b)
+    {
+        var au = a >> 31;
+        var ad = a & MASK31;
+        var bu = b >> 31;
+        var bd = b & MASK31;
+        var mid = ad * bu + au * bd;
+        var midu = mid >> 30;
+        var midd = (mid & MASK30);
+        return CalcMod(au * bu * 2 + midu + (midd << 31) + ad * bd);
+    }
+    private static ulong CalcMod(ulong val)
+    {
+        val = (val & MOD) + (val >> 61);
+        if (val > MOD) val -= MOD;
+        return val;
+    }
+
+    public ulong GetHash(int l = 0, int r = -1)
+    {
+        if (r < 0) r = str.Length;
+        return CalcMod(hashTable[r] + MOD * ((1UL << 3) - 1) - Mul(hashTable[l], pow[r - l]));
+    }
+}]]>
+    </Code>
+    <Declarations>
+      <Literal>
+        <ID> maxLength </ID>
+        <ToolTip>string maxlen</ToolTip>
+        <Default>10101</Default>
+      </Literal>
+    </Declarations>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>SegmentTree</Title>
+    <Author>ひばち</Author>
+    <Description>セグメント木</Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>segmenttree</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[public class SegmentTree<T>
+{
+    protected readonly T[] data;
+    protected readonly int size;
+    protected readonly Func<T, T, T> merge;
+    protected readonly Func<T, T, T> update;
+    protected readonly T idT;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected int Parent(int i)
+        => (i - 1) >> 1;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected int Left(int i)
+        => (i << 1) + 1;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected int Right(int i)
+        => (i + 1) << 1;
+    public T this[int i]
+    {
+        get { return data[i + size - 1]; }
+        set { data[i + size - 1] = value; }
+    }
+
+    public SegmentTree(int N, T idT, Func<T, T, T> merge, Func<T, T, T> update = null)
+    {
+        this.size = 1;
+        this.idT = idT;
+        this.merge = merge;
+        this.update = update ?? ((T val1, T val2) => val2);
+        while (size < N)
+            size <<= 1;
+        data = new T[2 * this.size - 1];
+        for (var i = 0; i < 2 * size - 1; i++)
+            data[i] = idT;
+    }
+
+    public void Update(int i, T value)
+    {
+        i += size - 1;
+        data[i] = update(data[i], value);
+        while (i > 0)
+        {
+            i = Parent(i);
+            data[i] = merge(data[Left(i)], data[Right(i)]);
+        }
+    }
+
+    public void Build()
+    {
+        for (int i = size - 2; i >= 0; i--)
+            data[i] = merge(data[Left(i)], data[Right(i)]);
+    }
+
+    public virtual T Query(int left, int right, int k = 0, int l = 0, int r = -1)
+    {
+        if (r == -1) r = size;
+        if (r <= left || right <= l) return idT;
+        if (left <= l && r <= right) return data[k];
+        else
+            return merge(Query(left, right, Left(k), l, (l + r) >> 1), Query(left, right, Right(k), (l + r) >> 1, r));
+    }
+
+    /// <summary>
+    /// check(func(item[st]...item[i]))がtrueとなる最小のi
+    /// </summary>
+    public int Find(int st, Func<T, bool> check)
+    {
+        var x = idT;
+        return Find(st, check, ref x, 0, 0, size);
+    }
+    private int Find(int st, Func<T, bool> check, ref T x, int k, int l, int r)
+    {
+        if (l + 1 == r)
+        { x = merge(x, data[k]); return check(x) ? k - size + 1 : -1; }
+        var m = (l + r) >> 1;
+        if (m <= st) return Find(st, check, ref x, Right(k), m, r);
+        if (st <= l && !check(merge(x, data[k])))
+        { x = merge(x, data[k]); return -1; }
+        var xl = Find(st, check, ref x, Left(k), l, m);
+        if (xl >= 0) return xl;
+        return Find(st, check, ref x, Right(k), m, r);
+    }
+}]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>StronglyConnectedComponents</Title>
+    <Author>ひばち</Author>
+    <Description>強連結成分分解</Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>stronglyconnectedcomponents</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[public class StronglyConnectedComponents
+{
+    private List<int>[] g, rev;
+    private Stack<int> st;
+    private List<List<int>> scc;
+    private int[] group;
+    private bool[] use;
+    public int Count { get; private set; }
+    public int this[int i] { get { return group[i]; } }
+    public List<int> KthGroup(int k) => scc[k];
+    public StronglyConnectedComponents(int count)
+    {
+        g = Create(count, () => new List<int>());
+        rev = Create(count, () => new List<int>());
+        group = new int[count];
+    }
+    public void AddEdge(int from, int to)
+    {
+        g[from].Add(to);
+        rev[to].Add(from);
+    }
+    /// <summary>
+    /// O(V+E)
+    /// </summary>
+    /// <returns>scc[i]:i番目の強連結成分の頂点</returns>
+    public List<List<int>> Execute()
+    {
+        scc = new List<List<int>>();
+        use = new bool[g.Length];
+        st = new Stack<int>();
+        for (var i = 0; i < g.Length; i++)
+            if (!use[i])
+                dfs1(i);
+        use = new bool[g.Length];
+        while (st.Any())
+        {
+            scc.Add(new List<int>());
+            Count++;
+            dfs2(st.Pop());
+            while (st.Any() && use[st.Peek()])
+                st.Pop();
+        }
+        return scc;
+    }
+    private void dfs1(int index)
+    {
+        use[index] = true;
+        foreach (var e in g[index])
+            if (!use[e])
+                dfs1(e);
+        st.Push(index);
+    }
+    private void dfs2(int index)
+    {
+        group[index] = Count - 1;
+        use[index] = true;
+        scc[scc.Count - 1].Add(index);
+        foreach (var e in rev[index])
+            if (!use[e])
+                dfs2(e);
+    }
+}]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>Sum2D</Title>
+    <Author>
+    </Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>csum2d</Shortcut>
+  </Header>
+  <Snippet>
+    <Declarations>
+      <Literal Editable="true">
+        <ID>T</ID>
+        <ToolTip>T</ToolTip>
+        <Default>T</Default>
+        <Function>
+        </Function>
+      </Literal>
+    </Declarations>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[public class Sum2D
+{
+    private $T$[][] data;
+    public Sum2D(int H,int W)
+    {
+        data = Create(H + 1, () => new $T$[W + 1]);
+    }
+    public $T$ this[int i,int j]
+    { get { return data[i + 1][j + 1]; } set { data[i + 1][j + 1] = value; } }
+    public void Build()
+    {
+        for (var i = 1; i < data.Length; i++)
+            for (var j = 1; j < data[0].Length; j++)
+                data[i][j] += data[i - 1][j] + data[i][j - 1] - data[i - 1][j - 1];
+    }
+    public $T$ Sum(int y1, int x1, int y2, int x2)
+        => data[++y2][++x2] - data[y2][x1] - data[y1][x2] + data[y1][x1];
+}]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>TopologicalSort</Title>
+    <Author>ひばち</Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>topologicalsort</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[public class TopologicalSort
+    {
+        private List<int>[] g;
+        private int[] indeg;
+        private List<int> list;
+        public TopologicalSort(int count)
+        { g = Create(count, () => new List<int>()); indeg = new int[count]; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void AddEdge(int from, int to)
+        {
+            g[from].Add(to);
+            indeg[to]++;
+        }
+        public List<int> Execute()
+        {
+            list = new List<int>(g.Length);
+            var q = new Queue<int>();
+            for (var i = 0; i < g.Length; i++)
+                if (indeg[i] == 0)
+                    q.Enqueue(i);
+            while (q.Any())
+            {
+                var p = q.Dequeue();
+                list.Add(p);
+                foreach (var e in g[p])
+                    if (--indeg[e] == 0)
+                        q.Enqueue(e);
+            }
+            return list;
+        }
+    }]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>UnionFind</Title>
+    <Author>ひばち</Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>unionfind</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[public class UnionFind
+{
+    public int GroupCount { get; private set; }
+    protected int[] data;
+    public virtual int this[int i] => Find(i);
+    public UnionFind(int size)
+    {
+        data = Create(size, () => -1);
+        GroupCount = size;
+    }
+    protected int Find(int i)
+        => data[i] < 0 ? i : (data[i] = Find(data[i]));
+    public int Size(int i)
+        => -data[Find(i)];
+    public virtual bool Union(int u, int v)
+    {
+        u = Find(u); v = Find(v);
+        if (u == v) return false;
+        if (data[u] > data[v])
+            swap(ref u, ref v);
+        GroupCount--;
+        data[u] += data[v];
+        data[v] = u;
+        return true;
+    }
+}]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>UpperBound</Title>
+    <Author>ひばち</Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>upperbound</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[#region UpperBound/LowerBound
+    public static int UpperBound<T>(IList<T> array, T value, Comparison<T> cmp = null)
+    {
+        cmp = cmp ?? Comparer<T>.Default.Compare;
+        var low = -1;
+        var high = array.Count;
+        while (high - low > 1)
+        {
+            var mid = (high + low) / 2;
+            if (cmp(array[mid], value) == 1) high = mid;
+            else low = mid;
+        }
+        return high;
+    }
+
+    public static int LowerBound<T>(IList<T> array, T value, Comparison<T> cmp = null)
+    {
+        cmp = cmp ?? Comparer<T>.Default.Compare;
+        var low = -1;
+        var high = array.Count;
+        while (high - low > 1)
+        {
+            var mid = (high + low) / 2;
+            if (cmp(array[mid], value) != -1) high = mid;
+            else low = mid;
+        }
+        return high;
+    }
+    #endregion]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+<CodeSnippet Format="1.0.0">
+  <Header>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+    <Title>WeightedUnionFind</Title>
+    <Author>
+    </Author>
+    <Description>
+    </Description>
+    <HelpUrl>
+    </HelpUrl>
+    <Shortcut>weightedunionfind</Shortcut>
+  </Header>
+  <Snippet>
+    <Code Language="csharp" Delimiter="$">
+      <![CDATA[class WeightedUnionFind
+{
+    public int GroupCount { get; private set; }
+    protected int[] data;
+    private long[] dif;
+    public virtual int this[int i] { get { return Find(i); } }
+    public WeightedUnionFind(int size)
+    {
+        data = new int[size];dif = new long[size];
+        GroupCount = size;
+        for (var i = 0; i < size; i++)
+            data[i] = -1;
+    }
+    protected int Find(int i)
+    {
+        if (data[i] < 0) return i;
+        var root = Find(data[i]);
+        dif[i] += dif[data[i]];
+        return data[i] = root;
+    }
+    private long Weight(int i) { Find(i); return dif[i]; }
+    public long Dif(int u, int v)
+        => Weight(v) - Weight(u);
+    public int Size(int i)
+        => -data[Find(i)];
+    public virtual bool Union(int u, int v,long w)
+    {
+        w += Weight(u); w -= Weight(v);
+        u = Find(u); v = Find(v);
+        if (u == v) return false;
+        if (data[u] > data[v])
+        { swap(ref u, ref v); w = -w; }
+        GroupCount--;
+        data[u] += data[v];
+        data[v] = u;
+        dif[v] = w;
+        return true;
+    }
+}]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
+
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+      <Title>PartiallyPersistentUnionFind</Title>
+      <Author>
+      </Author>
+      <Description>
+      </Description>
+      <HelpUrl>
+      </HelpUrl>
+      <Shortcut>partiallypersistentunionfind</Shortcut>
+    </Header>
+    <Snippet>
+      <Code Language="csharp" Delimiter="$">
+        <![CDATA[public class PartiallyPersistentUnionFind
+{
+    private int now = -1;
+    protected int[] data, time;
+    List<Tuple<int, int>>[] size;
+    public virtual int this[int t, int i] { get { return Find(t, i); } }
+    public PartiallyPersistentUnionFind(int size)
+    {
+        data = Create(size, () => -1);
+        this.size = Create(size, () => new List<Tuple<int, int>> { new Tuple<int, int>(-1, 1) });
+        time = Create(size, () => int.MaxValue);
+    }
+    protected int Find(int t, int i)
+    {
+        if (time[i] > t) return i;
+        return Find(t, data[i]);
+    }
+    public int Size(int t, int x)
+    {
+        x = Find(t, x);
+        int r = size[x].Count, l = -1;
+        while (r - l > 1)
+        {
+            var m = (r + l) / 2;
+            if (size[x][m].Item1 > t) r = m;
+            else l = m;
+        }
+        return size[x][l].Item2;
+    }
+    public virtual bool Union(int u, int v)
+    {
+        now++;
+        u = Find(now, u); v = Find(now, v);
+        if (u == v) return false;
+        if (data[u] > data[v])
+            swap(ref u, ref v);
+        data[u] += data[v];
+        size[u].Add(new Tuple<int, int>(now, -data[u]));
+        data[v] = u;
+        time[v] = now;
+        return true;
+    }
+}]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+  
+</CodeSnippets>
