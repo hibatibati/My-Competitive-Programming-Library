@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 //部分木クエリのための非再帰オイラーツアー
 int[] l, r;
 public void EulerTour(List<int>[] edge, int root = 0)

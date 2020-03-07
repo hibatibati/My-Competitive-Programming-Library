@@ -262,12 +262,11 @@
   </Header>
   <Snippet>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[public static Dictionary<T, int> Compression<T>(T[] ar, int d = 0, Comparison<T> cmp = null)
+      <![CDATA[public static Dictionary<T, int> Compression<T>(IList<T> A, int d = 0, Comparison<T> cmp = null)
     {
         cmp = cmp ?? Comparer<T>.Default.Compare;
         var dic = new Dictionary<T, int>();
-        var cp = new T[ar.Length];
-        Array.Copy(ar, cp, ar.Length);
+        var cp = A.ToArray();
         Array.Sort(cp, (a, b) => cmp(a, b));
         for (var i = 0; i < cp.Length; i++)
             if (!dic.ContainsKey(cp[i]))
@@ -832,8 +831,8 @@
   <Snippet>
     <Code Language="csharp" Delimiter="$">
       <![CDATA[int[] gh = new[] { 0, 0, 1, -1 }, gw = new[] { 1, -1, 0, 0 };
-    public static bool Inside(int h, int w, int hh, int ww)
-        => 0 <= h && h < hh && 0 <= w && w < ww;]]>
+    public static bool Inside(int h, int w, int H, int W)
+        => 0 <= h && h < H && 0 <= w && w < W;]]>
     </Code>
   </Snippet>
 </CodeSnippet>
@@ -1038,57 +1037,63 @@ where E : IComparable<E>
   </Header>
   <Snippet>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[ class LowestCommonAncestor
+      <![CDATA[class LowestCommonAncestor
+{
+    private List<int>[] g;
+    private int N, lb;
+    private int[][] parent;
+    private int[] depth;
+    private bool finished;
+    public LowestCommonAncestor(int N)
+    { this.N = N; g = Create(N, () => new List<int>()); }
+    public void AddEdge(int u, int v)
     {
-        private List<int>[] edge;
-        private int num, lb;
-        private int[][] parent;
-        private int[] depth;
-        public LowestCommonAncestor(int num)
-        { this.num = num; edge = Create(num, () => new List<int>()); }
-        public void AddEdge(int u, int v)
+        g[u].Add(v); g[v].Add(u);
+    }
+    public void Build(int root = 0)
+    {
+        for (lb = 31; lb >= 0; lb--)
+            if ((1 & N >> lb) == 1)
+                break;
+        parent = Create(lb + 1, () => Create(N, () => -1));
+        depth = new int[N];
+        var st = new Stack<int>();
+        st.Push(-1);
+        st.Push(root);
+        while (st.Any())
         {
-            edge[u].Add(v);edge[v].Add(u);
-        }
-        public void Build(int root = 0)
-        {
-            for (lb = 31; lb >= 0; lb--)
-                if ((1 & num >> lb) == 1)
-                    break;
-            parent = Create(lb + 1, () => Create(num, () => -1));
-            depth = new int[num];
-            PreDFS(root, -1);
-            for(var i=1;i<=lb;i++)
-                for(var j=0;j<num;j++)
-                    if(parent[i-1][j]!=-1)
-                    {
-                        parent[i][j] = parent[i - 1][parent[i - 1][j]];
-                    }
-        }
-        private void PreDFS(int index,int p)
-        {
-            parent[0][index] = p;
-            foreach (var e in edge[index])
+            int i = st.Pop(), p = st.Pop();
+            parent[0][i] = p;
+            foreach (var e in g[i])
                 if (e != p)
                 {
-                    depth[e] = depth[index] + 1;
-                    PreDFS(e, index);
+                    depth[e] = depth[i] + 1;
+                    st.Push(i); st.Push(e);
                 }
         }
-        public int LCA(int u, int v)
-        {
-            if (depth[u] > depth[v])
-                swap(ref u, ref v);
-            for (var i = lb; i >= 0; i--)
-                if ((1 & (depth[v] - depth[u]) >> i) == 1)
-                    v = parent[i][v];
-            if (u == v) return u;
-            for (var i = lb; i >= 0; i--)
-                if (parent[i][u] != parent[i][v])
-                { u = parent[i][u]; v = parent[i][v]; }
-            return parent[0][u];
-        }
-    }]]>
+        for (var i = 1; i <= lb; i++)
+            for (var j = 0; j < N; j++)
+                if (parent[i - 1][j] != -1)
+                {
+                    parent[i][j] = parent[i - 1][parent[i - 1][j]];
+                }
+        finished = true;
+    }
+    public int LCA(int u, int v)
+    {
+        if (!finished) throw new Exception("You Need to Execute \"Build()\"");
+        if (depth[u] > depth[v])
+            swap(ref u, ref v);
+        for (var i = lb; i >= 0; i--)
+            if ((1 & (depth[v] - depth[u]) >> i) == 1)
+                v = parent[i][v];
+        if (u == v) return u;
+        for (var i = lb; i >= 0; i--)
+            if (parent[i][u] != parent[i][v])
+            { u = parent[i][u]; v = parent[i][v]; }
+        return parent[0][u];
+    }
+}]]>
     </Code>
   </Snippet>
 </CodeSnippet>
@@ -1588,7 +1593,18 @@ where E : IComparable<E>
             else t = t.lst;
         }
     }
-
+    public bool Contains(T v)
+    {
+        var k = 0;
+        var t = root;
+        for (; ; )
+        {
+            if (t.Count == 0) return false;
+            if (comparer.Compare(t.Key, v) == 0) return true;
+            if (comparer.Compare(t.Key, v) < 0) { k += t.lst.Count + 1; t = t.rst; }
+            else t = t.lst;
+        }
+    }
     void rotR(ref Node t)
     {
         var l = t.lst;
@@ -1919,6 +1935,7 @@ where E : IComparable<E>
     <Code Language="csharp" Delimiter="$">
       <![CDATA[public static List<Pair<T, int>> RLEncoding<T>(IList<T> list, Comparison<T> cmp = null)
     {
+        if (list.Count == 0) throw new Exception("list is empty");
         cmp = cmp ?? Comparer<T>.Default.Compare;
         var ret = new List<Pair<T, int>> { new Pair<T, int>(list[0], 1) };
         for (var i = 1; i < list.Count; i++)
@@ -2025,82 +2042,77 @@ public class RollingHash
     <Code Language="csharp" Delimiter="$">
       <![CDATA[public class SegmentTree<T>
 {
-    protected readonly T[] data;
-    protected readonly int size;
+    protected readonly T[] dat;
+    protected readonly int sz;
     protected readonly Func<T, T, T> merge;
     protected readonly Func<T, T, T> update;
-    protected readonly T idT;
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected int Parent(int i)
-        => (i - 1) >> 1;
+    protected readonly T id;
+    private bool finished = true;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected int Left(int i)
-        => (i << 1) + 1;
+        => i << 1;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected int Right(int i)
-        => (i + 1) << 1;
+        => (i << 1) | 1;
     public T this[int i]
     {
-        get { return data[i + size - 1]; }
-        set { data[i + size - 1] = value; }
+        get { return dat[i + sz]; }
+        set { finished = false; dat[i + sz] = value; }
     }
 
-    public SegmentTree(int N, T idT, Func<T, T, T> merge, Func<T, T, T> update = null)
+    public SegmentTree(int N, T id, Func<T, T, T> merge, Func<T, T, T> update = null)
     {
-        this.size = 1;
-        this.idT = idT;
+        this.sz = 1;
+        while (sz < N) sz <<= 1;
+        this.id = id;
         this.merge = merge;
         this.update = update ?? ((T val1, T val2) => val2);
-        while (size < N)
-            size <<= 1;
-        data = new T[2 * this.size - 1];
-        for (var i = 0; i < 2 * size - 1; i++)
-            data[i] = idT;
+        dat = Create(sz << 1, () => id);
     }
 
     public void Update(int i, T value)
     {
-        i += size - 1;
-        data[i] = update(data[i], value);
-        while (i > 0)
+        i += sz;
+        dat[i] = update(dat[i], value);
+        while (i > 1)
         {
-            i = Parent(i);
-            data[i] = merge(data[Left(i)], data[Right(i)]);
+            i >>= 1;
+            dat[i] = merge(dat[Left(i)], dat[Right(i)]);
         }
     }
 
     public void Build()
     {
-        for (int i = size - 2; i >= 0; i--)
-            data[i] = merge(data[Left(i)], data[Right(i)]);
+        for (int i = sz - 1; i > 0; i--)
+            dat[i] = merge(dat[Left(i)], dat[Right(i)]);
+        finished = true;
     }
 
-    public virtual T Query(int left, int right, int k = 0, int l = 0, int r = -1)
+    public virtual T Query(int left, int right)
     {
-        if (r == -1) r = size;
-        if (r <= left || right <= l) return idT;
-        if (left <= l && r <= right) return data[k];
-        else
-            return merge(Query(left, right, Left(k), l, (l + r) >> 1), Query(left, right, Right(k), (l + r) >> 1, r));
+        if (!finished) throw new Exception("You need to Execute \"Build()\"");
+        T l = id, r = id;
+        for (left += sz, right += sz; left < right; left >>= 1, right >>= 1)
+        {
+            if ((left & 1) == 1) l = merge(l, dat[left++]);
+            if ((right & 1) == 1) r = merge(dat[--right], r);
+        }
+        return merge(l, r);
     }
 
-    /// <summary>
-    /// check(func(item[st]...item[i]))がtrueとなる最小のi
-    /// </summary>
     public int Find(int st, Func<T, bool> check)
     {
-        var x = idT;
-        return Find(st, check, ref x, 0, 0, size);
+        var x = id;
+        return Find(st, check, ref x, 1, 0, sz);
     }
     private int Find(int st, Func<T, bool> check, ref T x, int k, int l, int r)
     {
         if (l + 1 == r)
-        { x = merge(x, data[k]); return check(x) ? k - size + 1 : -1; }
+        { x = merge(x, dat[k]); return check(x) ? k - sz : -1; }
         var m = (l + r) >> 1;
         if (m <= st) return Find(st, check, ref x, Right(k), m, r);
-        if (st <= l && !check(merge(x, data[k])))
-        { x = merge(x, data[k]); return -1; }
+        if (st <= l && !check(merge(x, dat[k])))
+        { x = merge(x, dat[k]); return -1; }
         var xl = Find(st, check, ref x, Left(k), l, m);
         if (xl >= 0) return xl;
         return Find(st, check, ref x, Right(k), m, r);
@@ -2498,6 +2510,91 @@ public class RollingHash
         return true;
     }
 }]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+      <Title>NextPermutations</Title>
+      <Author>
+      </Author>
+      <Description>
+      </Description>
+      <HelpUrl>
+      </HelpUrl>
+      <Shortcut>nextpermutations</Shortcut>
+    </Header>
+    <Snippet>
+      <Code Language="csharp" Delimiter="$">
+        <![CDATA[static IEnumerable<T[]> Permutations<T>(T[] array) where T : IComparable<T>
+    {
+        int index = 0;
+        yield return array;
+        while (true)
+        {
+            for (int i = array.Length - 1; i > 0; i--)
+            {
+                if (array[i - 1].CompareTo(array[i]) >= 0) continue;
+                int j = Array.FindLastIndex(array, x => array[i - 1].CompareTo(x) < 0);
+                T tmp = array[i - 1]; array[i - 1] = array[j]; array[j] = tmp;
+                Array.Reverse(array, i, array.Length - i);
+                yield return array;
+                goto end;
+            }
+            Array.Reverse(array, index, array.Length);
+            yield break;
+        end:;
+        }
+    }]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+      <Title>GaussJordan_Binary</Title>
+      <Author>
+      </Author>
+      <Description>
+      </Description>
+      <HelpUrl>
+      </HelpUrl>
+      <Shortcut>gaussjordan_binary</Shortcut>
+    </Header>
+    <Snippet>
+      <Code Language="csharp" Delimiter="$">
+        <![CDATA[int GaussJordan(int[][] A)
+    {
+        int H = A.Length, W = A[0].Length,rank;
+        for (rank = 0; rank < W; ++rank)
+        {
+            int pivot = -1;
+            for (int row = rank; row < H; ++row)
+            {
+                if (A[row][rank] != 0)
+                {
+                    pivot = row;
+                    break;
+                }
+            }
+            if (pivot == -1) break;
+            swap(ref A[pivot], ref A[rank]);
+            for (int row = 0; row < H; ++row)
+            {
+                if (row != rank && A[row][rank] != 0)
+                    for (int i = 0; i < A[row].Length; i++)
+                        A[row][i] ^= A[rank][i];
+            }
+        }
+        return rank;
+    }]]>
       </Code>
     </Snippet>
   </CodeSnippet>

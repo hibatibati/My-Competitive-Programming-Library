@@ -7,11 +7,12 @@ using System.Runtime.CompilerServices;
 class LowestCommonAncestor
 {
     private List<int>[] edge;
-    private int num, lb;
+    private int N, lb;
     private int[][] parent;
     private int[] depth;
-    public LowestCommonAncestor(int num)
-    { this.num = num; edge = Create(num, () => new List<int>()); }
+    private bool finished;
+    public LowestCommonAncestor(int N)
+    { this.N = N; edge = Create(N, () => new List<int>()); }
     public void AddEdge(int u, int v)
     {
         edge[u].Add(v); edge[v].Add(u);
@@ -19,10 +20,10 @@ class LowestCommonAncestor
     public void Build(int root = 0)
     {
         for (lb = 31; lb >= 0; lb--)
-            if ((1 & num >> lb) == 1)
+            if ((1 & N >> lb) == 1)
                 break;
-        parent = Create(lb + 1, () => Create(num, () => -1));
-        depth = new int[num];
+        parent = Create(lb + 1, () => Create(N, () => -1));
+        depth = new int[N];
         var st = new Stack<int>();
         st.Push(-1);
         st.Push(root);
@@ -38,14 +39,16 @@ class LowestCommonAncestor
                 }
         }
         for (var i = 1; i <= lb; i++)
-            for (var j = 0; j < num; j++)
+            for (var j = 0; j < N; j++)
                 if (parent[i - 1][j] != -1)
                 {
                     parent[i][j] = parent[i - 1][parent[i - 1][j]];
                 }
+        finished = true;
     }
     public int LCA(int u, int v)
     {
+        if (!finished) throw new Exception("You Need to Execute \"Build()\"");
         if (depth[u] > depth[v])
             swap(ref u, ref v);
         for (var i = lb; i >= 0; i--)
