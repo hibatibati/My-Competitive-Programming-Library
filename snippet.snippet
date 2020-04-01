@@ -16,13 +16,15 @@
   </Header>
   <Snippet>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[class AggregationQueue<T>
+      <![CDATA[$end$ class AggregationQueue<T>
 {
     private Stack<Node> front, back;
-    private Func<T, T, T> f;//半群
-    public AggregationQueue(Func<T, T, T> f)
+    private Func<T, T, T> f;//Monoid
+    private T id;
+    public AggregationQueue(Func<T, T, T> f,T id=default(T))
     {
         this.f = f;
+        this.id = id;
         front = new Stack<Node>();
         back = new Stack<Node>();
     }
@@ -30,6 +32,7 @@
     public bool Any() => front.Count > 0 || back.Count > 0;
     public T All_Fold()
     {
+        if (!front.Any() && !back.Any()) return id;
         if (!front.Any())
             return back.Peek().sum;
         if (!back.Any())
@@ -58,7 +61,7 @@
     private struct Node
     {
         public T val, sum;
-        public Node(T v,T s) { val = v;sum = s; }
+        public Node(T v, T s) { val = v; sum = s; }
     }
 }]]>
     </Code>
@@ -161,7 +164,7 @@
   </Header>
   <Snippet>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[public class BipartiteGraph : UnionFind
+      <![CDATA[$end$ public class BipartiteGraph : UnionFind
 {
     int num;
     public override int this[int i] { get { return Find(0)==Find(i)?1:0; } }
@@ -205,7 +208,7 @@
       </Literal>
     </Declarations>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[class BIT2D
+      <![CDATA[$end$ class BIT2D
 {
     int H, W;
     $T$[] item;
@@ -272,7 +275,7 @@
             if (!dic.ContainsKey(cp[i]))
                 dic[cp[i]] = d++;
         return dic;
-    }]]>
+    }$end$]]>
     </Code>
   </Snippet>
 </CodeSnippet>
@@ -292,7 +295,7 @@
   </Header>
   <Snippet>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[public class Deque<T>
+      <![CDATA[$end$ public class Deque<T>
 {
     private T[] data;
     int offset, sz;
@@ -301,7 +304,7 @@
     public T this[int i]
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get { return data[(i + offset) & (sz - 1)]; }
+        get { return data[MOD(i + offset)]; }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set { data[MOD(i + offset)] = value; }
     }
@@ -344,6 +347,13 @@
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Any() => Count > 0;
+    public T[] ToArray()
+    {
+        var rt = new T[Count];
+        for (int i = 0; i < Count; i++)
+            rt[i] = this[i];
+        return rt;
+    }
 }]]>
     </Code>
   </Snippet>
@@ -376,7 +386,7 @@
       </Literal>
     </Declarations>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[List<Edge>[] edges;
+      <![CDATA[$end$ List<Edge>[] edges;
     public $T$[] Dijkstra(int st = 0)
     {
         var dist = Create(edges.Length, () => $T$.MaxValue);
@@ -400,7 +410,7 @@
         public int to; public $T$ cost;
         public Edge(int t, $T$ c)
         { to = t; cost = c; }
-    }]]>
+    }$end$]]>
     </Code>
   </Snippet>
 </CodeSnippet>
@@ -430,7 +440,7 @@
       </Literal>
     </Declarations>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[class Dijkstra
+      <![CDATA[$end$ class Dijkstra
 {
     private int size;
     private List<Edge>[] edges;
@@ -485,7 +495,7 @@
   </Header>
   <Snippet>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[public class DualSegmentTree<T>
+      <![CDATA[$end$ public class DualSegmentTree<T>
 {
     protected readonly T[] data;
     protected readonly int size;
@@ -578,7 +588,7 @@
   </Header>
   <Snippet>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[int[] l, r;
+      <![CDATA[$end$ int[] l, r;
     public void EulerTour(List<int>[] edge, int root = 0)
     {
         var st = new Stack<int>();
@@ -619,7 +629,7 @@
   </Header>
   <Snippet>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[#region GCD
+      <![CDATA[$end$ #region GCD
     public static int LCM(int num1, int num2)
         => num1 / GCD(num1, num2) * num2;
 
@@ -671,7 +681,7 @@
       <![CDATA[var dist = Create($H$, () => Create($W$, () => -1));
         var que = new Queue<Pi>();
         //始点
-        
+        $end$
         while (que.Any())
         {
             var p = que.Dequeue();
@@ -705,6 +715,13 @@
   <Snippet>
     <Declarations>
       <Literal Editable="true">
+        <ID>g</ID>
+        <ToolTip>g</ToolTip>
+        <Default>g</Default>
+        <Function>
+        </Function>
+      </Literal>
+      <Literal Editable="true">
         <ID>N</ID>
         <ToolTip>N</ToolTip>
         <Default>N</Default>
@@ -720,15 +737,15 @@
       </Literal>
     </Declarations>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[var edge = Create($N$, () => new List<int>());
+      <![CDATA[var $g$= Create($N$, () => new List<int>());
         for(var i = 0; i < $M$; i++)
         {
             int a, b;
             sc.Make(out a, out b);
             a--;b--;
-            edge[a].Add(b);
-            edge[b].Add(a);
-        }]]>
+            $g$[a].Add(b);
+            $g$[b].Add(a);
+        }$end$]]>
     </Code>
   </Snippet>
 </CodeSnippet>
@@ -765,7 +782,7 @@
             a--;b--;
             d.AddEdge(a, b, c);
             d.AddEdge(b, a, c);
-        }]]>
+        }$end$]]>
     </Code>
   </Snippet>
 </CodeSnippet>
@@ -832,7 +849,7 @@
     <Code Language="csharp" Delimiter="$">
       <![CDATA[int[] gh = new[] { 0, 0, 1, -1 }, gw = new[] { 1, -1, 0, 0 };
     public static bool Inside(int h, int w, int H, int W)
-        => 0 <= h && h < H && 0 <= w && w < W;]]>
+        => 0 <= h && h < H && 0 <= w && w < W;$end$]]>
     </Code>
   </Snippet>
 </CodeSnippet>
@@ -862,7 +879,7 @@
       </Literal>
     </Declarations>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[class Kruskal
+      <![CDATA[$end$ class Kruskal
 {
     private int num;
     private List<Edge> edges;
@@ -912,7 +929,7 @@
   </Header>
   <Snippet>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[public class LazySegmentTree<T, E>
+      <![CDATA[$end$ public class LazySegmentTree<T, E>
 where E : IComparable<E>
 {
     protected readonly int size;
@@ -1037,7 +1054,7 @@ where E : IComparable<E>
   </Header>
   <Snippet>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[class LowestCommonAncestor
+      <![CDATA[$end$ class LowestCommonAncestor
 {
     private List<int>[] g;
     private int N, lb;
@@ -1124,7 +1141,7 @@ where E : IComparable<E>
       </Literal>
     </Declarations>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[public class Matrix
+      <![CDATA[$end$ public class Matrix
 {
     private $T$[][] item { get; }
     public int Height { get; }
@@ -1232,7 +1249,7 @@ where E : IComparable<E>
   </Header>
   <Snippet>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[public class MaxFlow
+      <![CDATA[$end$ public class MaxFlow
 {
     readonly List<Edge>[] G;
     readonly int[] lv, iter;
@@ -1351,7 +1368,7 @@ where E : IComparable<E>
   </Header>
   <Snippet>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[public struct ModInt
+      <![CDATA[$end$ public struct ModInt
 {
     public const long MOD = (int)1e9 + 7;
     //public const long MOD = 998244353;
@@ -1446,7 +1463,7 @@ where E : IComparable<E>
   </Header>
   <Snippet>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[public class Set<T>
+      <![CDATA[$end$ public class Set<T>
 {
     Node root;
     readonly IComparer<T> comparer;
@@ -1623,7 +1640,19 @@ where E : IComparable<E>
         r.Update();
         t = r;
     }
-
+    public T[] ToArray()
+    {
+        var rt = new T[Count];var idx = 0;
+        Action<Node> dfs = null;
+        dfs = a =>
+        {
+            if (a.lst != nil) dfs(a.lst);
+            rt[idx++] = a.Key;
+            if (a.rst != nil) dfs(a.rst);
+        };
+        dfs(root);
+        return rt;
+    }
 
     class Node
     {
@@ -1665,7 +1694,7 @@ where E : IComparable<E>
   </Header>
   <Snippet>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[public static Dictionary<long, int> Factorize(long num)
+      <![CDATA[$end$ public static Dictionary<long, int> Factorize(long num)
     {
         var dic = new Dictionary<long, int>();
         for (var i = 2L; i * i <= num; i++)
@@ -1708,7 +1737,7 @@ where E : IComparable<E>
         </Function>
       </Literal>
     </Declarations>
-    <Code Language="csharp" Delimiter="$"><![CDATA[Console.WriteLine(string.Join("\n", $res$));]]></Code>
+    <Code Language="csharp" Delimiter="$"><![CDATA[Console.WriteLine(string.Join("\n", $res$));$end$]]></Code>
   </Snippet>
 </CodeSnippet>
 
@@ -1735,7 +1764,7 @@ where E : IComparable<E>
         </Function>
       </Literal>
     </Declarations>
-    <Code Language="csharp" Delimiter="$"><![CDATA[Console.WriteLine(string.Join(" ", $res$));]]></Code>
+    <Code Language="csharp" Delimiter="$"><![CDATA[Console.WriteLine(string.Join(" ", $res$));$end$]]></Code>
   </Snippet>
 </CodeSnippet>
 
@@ -1753,7 +1782,7 @@ where E : IComparable<E>
   </Header>
   <Snippet>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[public class PriorityQueue<T>
+      <![CDATA[$end$ public class PriorityQueue<T>
 {
     private List<T> data = new List<T>();
     private Comparison<T> cmp;
@@ -1829,7 +1858,7 @@ where E : IComparable<E>
       </Import>
     </Imports>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[public class RadixHeap<T>
+      <![CDATA[$end$ public class RadixHeap<T>
 {
     public int Count { get; set; }
     private tpRadixHeap last;
@@ -1899,7 +1928,7 @@ where E : IComparable<E>
   </Header>
   <Snippet>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[public class RingBuffer<T>
+      <![CDATA[$end$ public class RingBuffer<T>
 {
     private T[] data;
     public int Count { get; }
@@ -1933,16 +1962,17 @@ where E : IComparable<E>
   </Header>
   <Snippet>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[public static List<Pair<T, int>> RLEncoding<T>(IList<T> list, Comparison<T> cmp = null)
+      <![CDATA[$end$ public static List<Pair<T, int>> RLEncoding<T>(IList<T> list, Comparison<T> cmp = null)
     {
-        if (list.Count == 0) throw new Exception("list is empty");
         cmp = cmp ?? Comparer<T>.Default.Compare;
-        var ret = new List<Pair<T, int>> { new Pair<T, int>(list[0], 1) };
-        for (var i = 1; i < list.Count; i++)
-            if (cmp(ret.Last().v1, list[i]) == 0)
-                ret[ret.Count - 1].v2++;
-            else ret.Add(new Pair<T, int>(list[i], 1));
-        return ret;
+        var rt = new List<Pair<T, int>>();
+        int idx = 0;
+        for (int i = 0; i < list.Count; i = idx)
+        {
+            while (idx < list.Count && cmp(list[idx], list[i]) == 0) idx++;
+            rt.Add(new Pair<T, int>(list[i], idx - i));
+        }
+        return rt;
     }]]>
     </Code>
   </Snippet>
@@ -2040,7 +2070,7 @@ public class RollingHash
   </Header>
   <Snippet>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[public class SegmentTree<T>
+      <![CDATA[$end$ public class SegmentTree<T>
 {
     protected readonly T[] dat;
     protected readonly int sz;
@@ -2136,7 +2166,7 @@ public class RollingHash
   </Header>
   <Snippet>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[public class StronglyConnectedComponents
+      <![CDATA[$end$ public class StronglyConnectedComponents
 {
     private List<int>[] g, rev;
     private Stack<int> st;
@@ -2227,7 +2257,7 @@ public class RollingHash
       </Literal>
     </Declarations>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[public class Sum2D
+      <![CDATA[$end$ public class Sum2D
 {
     private $T$[][] data;
     public Sum2D(int H,int W)
@@ -2264,7 +2294,7 @@ public class RollingHash
   </Header>
   <Snippet>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[public class TopologicalSort
+      <![CDATA[$end$ public class TopologicalSort
     {
         private List<int>[] g;
         private int[] indeg;
@@ -2314,7 +2344,7 @@ public class RollingHash
   </Header>
   <Snippet>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[public class UnionFind
+      <![CDATA[$end$ public class UnionFind
 {
     public int GroupCount { get; private set; }
     protected int[] data;
@@ -2359,7 +2389,7 @@ public class RollingHash
   </Header>
   <Snippet>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[#region UpperBound/LowerBound
+      <![CDATA[$end$ #region UpperBound/LowerBound
     public static int UpperBound<T>(IList<T> array, T value, Comparison<T> cmp = null)
     {
         cmp = cmp ?? Comparer<T>.Default.Compare;
@@ -2408,7 +2438,7 @@ public class RollingHash
   </Header>
   <Snippet>
     <Code Language="csharp" Delimiter="$">
-      <![CDATA[class WeightedUnionFind
+      <![CDATA[$end$ class WeightedUnionFind
 {
     public int GroupCount { get; private set; }
     protected int[] data;
@@ -2467,7 +2497,7 @@ public class RollingHash
     </Header>
     <Snippet>
       <Code Language="csharp" Delimiter="$">
-        <![CDATA[public class PartiallyPersistentUnionFind
+        <![CDATA[$end$ public class PartiallyPersistentUnionFind
 {
     private int now = -1;
     protected int[] data, time;
@@ -2530,7 +2560,7 @@ public class RollingHash
     </Header>
     <Snippet>
       <Code Language="csharp" Delimiter="$">
-        <![CDATA[static IEnumerable<T[]> Permutations<T>(T[] array) where T : IComparable<T>
+        <![CDATA[$end$ static IEnumerable<T[]> Permutations<T>(T[] array) where T : IComparable<T>
     {
         int index = 0;
         yield return array;
@@ -2570,7 +2600,7 @@ public class RollingHash
     </Header>
     <Snippet>
       <Code Language="csharp" Delimiter="$">
-        <![CDATA[int GaussJordan(int[][] A)
+        <![CDATA[$end$ int GaussJordan(int[][] A)
     {
         int H = A.Length, W = A[0].Length,rank;
         for (rank = 0; rank < W; ++rank)
@@ -2599,4 +2629,248 @@ public class RollingHash
     </Snippet>
   </CodeSnippet>
   
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+      <Title>Solver</Title>
+      <Author>ひばち</Author>
+      <Description></Description>
+      <HelpUrl>
+      </HelpUrl>
+      <Shortcut>solver</Shortcut>
+    </Header>
+    <Snippet>
+      <Code Language="csharp" Delimiter="$">
+        <![CDATA[class Solver
+{
+    public void Solve(Scanner sc)
+    {
+        $end$
+    }
+}]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+      <Title>rep</Title>
+      <Author>ひばち</Author>
+      <Description></Description>
+      <HelpUrl>
+      </HelpUrl>
+      <Shortcut>rep</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal Editable="true">
+          <ID>i</ID>
+          <ToolTip>i</ToolTip>
+          <Default>i</Default>
+          <Function>
+          </Function>
+        </Literal>
+        
+        <Literal Editable="true">
+          <ID>length</ID>
+          <ToolTip>length</ToolTip>
+          <Default>length</Default>
+          <Function>
+          </Function>
+        </Literal>
+      </Declarations>
+      <Code Language="csharp" Delimiter="$">
+        <![CDATA[for(var $i$=0;$i$<$length$;$i$++)$end$]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+      <Title>REPP</Title>
+      <Author>ひばち</Author>
+      <Description></Description>
+      <HelpUrl>
+      </HelpUrl>
+      <Shortcut>repp</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal Editable="true">
+          <ID>i</ID>
+          <ToolTip>i</ToolTip>
+          <Default>i</Default>
+          <Function>
+          </Function>
+        </Literal>
+        
+        <Literal Editable="true">
+          <ID>begin</ID>
+          <ToolTip>begin</ToolTip>
+          <Default>begin</Default>
+          <Function>
+          </Function>
+        </Literal>
+        
+        <Literal Editable="true">
+          <ID>length</ID>
+          <ToolTip>length</ToolTip>
+          <Default>length</Default>
+          <Function>
+          </Function>
+        </Literal>
+      </Declarations>
+      <Code Language="csharp" Delimiter="$">
+        <![CDATA[for(var $i$=$begin$;$i$<$length$;$i$++)$end$]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+      <Title>rrep</Title>
+      <Author>ひばち</Author>
+      <Description></Description>
+      <HelpUrl>
+      </HelpUrl>
+      <Shortcut>rrep</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal Editable="true">
+          <ID>i</ID>
+          <ToolTip>i</ToolTip>
+          <Default>i</Default>
+          <Function>
+          </Function>
+        </Literal>
+
+        <Literal Editable="true">
+          <ID>length</ID>
+          <ToolTip>length</ToolTip>
+          <Default>length</Default>
+          <Function>
+          </Function>
+        </Literal>
+      </Declarations>
+      <Code Language="csharp" Delimiter="$">
+        <![CDATA[for(var $i$=$length$-1;$i$>=0;$i$--)$end$]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+      <Title>Accumulation</Title>
+      <Author>ひばち</Author>
+      <Description></Description>
+      <HelpUrl>
+      </HelpUrl>
+      <Shortcut>accumulation</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal Editable="true">
+          <ID>T</ID>
+          <ToolTip>T</ToolTip>
+          <Default>int</Default>
+          <Function>
+          </Function>
+        </Literal>
+        <Literal Editable="true">
+          <ID>name</ID>
+          <ToolTip>name</ToolTip>
+          <Default>sum</Default>
+          <Function>
+          </Function>
+        </Literal>
+        <Literal Editable="true">
+          <ID>length</ID>
+          <ToolTip>length</ToolTip>
+          <Default>length</Default>
+          <Function>
+          </Function>
+        </Literal>
+        <Literal Editable="true">
+          <ID>Array</ID>
+          <ToolTip>Array</ToolTip>
+          <Default>A</Default>
+          <Function>
+          </Function>
+        </Literal>
+      </Declarations>
+      <Code Language="csharp" Delimiter="$">
+        <![CDATA[$T$[] $name$=new $T$[$length$+1];
+        for(int i=0;i<$length$;i++){
+          $name$[i+1]=$name$[i]+$Array$[i];
+        }$end$]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+      <Title>ReAccumulation</Title>
+      <Author>ひばち</Author>
+      <Description></Description>
+      <HelpUrl>
+      </HelpUrl>
+      <Shortcut>raccumulation</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal Editable="true">
+          <ID>T</ID>
+          <ToolTip>T</ToolTip>
+          <Default>int</Default>
+          <Function>
+          </Function>
+        </Literal>
+        <Literal Editable="true">
+          <ID>name</ID>
+          <ToolTip>name</ToolTip>
+          <Default>sum</Default>
+          <Function>
+          </Function>
+        </Literal>
+        <Literal Editable="true">
+          <ID>length</ID>
+          <ToolTip>length</ToolTip>
+          <Default>length</Default>
+          <Function>
+          </Function>
+        </Literal>
+        <Literal Editable="true">
+          <ID>Array</ID>
+          <ToolTip>Array</ToolTip>
+          <Default>A</Default>
+          <Function>
+          </Function>
+        </Literal>
+      </Declarations>
+      <Code Language="csharp" Delimiter="$">
+        <![CDATA[$T$[] $name$=new $T$[$length$+1];
+        for(int i=$length$-1;i>=0;i--){
+          $name$[i]=$name$[i+1]+$Array$[i];
+        }$end$]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
 </CodeSnippets>
