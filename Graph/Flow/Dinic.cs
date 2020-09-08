@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 
+
 class Dinic
 {
     public List<Edge> edges;//(index&1)==0:edge, otherwise:reverse edge
@@ -61,6 +62,33 @@ class Dinic
         }
         return 0;
     }
+    public Edge GetEdge(int i) => new Edge { fr = edges[i].fr, to = edges[i].to, cap = edges[i].cap + edges[i ^ 1].cap, flow = edges[i ^ 1].cap };
+    public void ChangeEdge(int i, int newCap, int newFlow)
+    {
+        edges[i].cap = newCap - newFlow;
+        edges[i ^ 1].cap = newFlow;
+    }
+    public bool[] MinCut(int s)
+    {
+        var res = new bool[G.Length];
+        var Q = new Queue<int>();
+        Q.Enqueue(s);
+        res[s] = true;
+        while (Q.Any())
+        {
+            var p = Q.Dequeue();
+            foreach (var eidx in G[p])
+            {
+                var edge = edges[eidx];
+                if (!res[edge.to] && edge.cap != 0)
+                {
+                    res[edge.to] = true;
+                    Q.Enqueue(edge.to);
+                }
+            }
+        }
+        return res;
+    }
     public int Execute(int s, int t, int f = int.MaxValue)
     {
         int flow = 0;
@@ -74,7 +102,8 @@ class Dinic
     }
     public class Edge
     {
-        public int fr, to, idx; public int cap;
+        public int fr, to, idx; public int cap, flow;
+        public Edge() { }
         public Edge(int f, int t, int c, int i)
         {
             fr = f; to = t; cap = c; idx = i;
