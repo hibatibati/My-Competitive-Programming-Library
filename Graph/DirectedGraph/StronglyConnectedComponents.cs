@@ -5,14 +5,14 @@ using System.IO;
 using System.Runtime.CompilerServices;
 
 
+
 public class StronglyConnectedComponents
 {
     int size;
     List<Edge> edges;
     private int[][] scc;
-    private int[] group;
     public int Count { get; private set; }
-    public int this[int i] { get { return group[i]; } }
+    public int[] Group { get; private set; }
     public int[] GroupAt(int k) => scc[k];
     public StronglyConnectedComponents(int count)
     {
@@ -39,7 +39,7 @@ public class StronglyConnectedComponents
         //lowlink
         int nowOrd = 0;
         int[] low = new int[size], ord = new int[size];
-        group = new int[size];
+        Group = new int[size];
         var stack = new Stack<int>(size);
         for (int i = 0; i < ord.Length; i++) ord[i] = -1;
         Action<int> dfs = null;
@@ -63,25 +63,25 @@ public class StronglyConnectedComponents
                 {
                     var u = stack.Pop();
                     ord[u] = size;
-                    group[u] = Count;
+                    Group[u] = Count;
                     if (u == v) break;
                 }
                 Count++;
             }
         };
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < ord.Length; i++)
         {
             if (ord[i] == -1) dfs(i);
         }
-        for (int i = 0; i < group.Length; i++)
+        for (int i = 0; i < Group.Length; i++)
         {
-            group[i] = Count - 1 - group[i];
+            Group[i] = Count - 1 - Group[i];
             count[i] = 0;
         }
         scc = new int[Count][];
-        foreach (var g in group) count[g]++;
-        for (int i = 0; i < Count; i++) scc[i] = new int[count[i]];
-        for (int i = 0; i < size; i++) scc[group[i]][--count[group[i]]] = i;
+        foreach (var g in Group) count[g]++;
+        for (int i = 0; i < scc.Length; i++) scc[i] = new int[count[i]];
+        for (int i = 0; i < Group.Length; i++) scc[Group[i]][--count[Group[i]]] = i;
         return scc;
     }
     struct Edge { public int from, to; public Edge(int f, int t) { from = f; to = t; } }
